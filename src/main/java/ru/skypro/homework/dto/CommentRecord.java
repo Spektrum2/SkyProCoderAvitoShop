@@ -1,9 +1,9 @@
 package ru.skypro.homework.dto;
 
-public class Comment{
+public class CommentRecord {
+        private Integer id;
         private Integer author;
         private String createdAt;
-        private Integer id;
         private String text;
 
         public Integer getAuthor() {

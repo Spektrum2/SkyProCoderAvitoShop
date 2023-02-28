@@ -1,9 +1,9 @@
 package ru.skypro.homework.dto;
 
-public class Ads {
+public class AdsNotFull {
+    private Integer id;
     private Integer author;
     private String image;
-    private Integer id;
     private Integer price;
     private String title;
 

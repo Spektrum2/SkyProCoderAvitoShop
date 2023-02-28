@@ -2,7 +2,7 @@ package ru.skypro.homework.dto;
 
 public class ResponseWrapperAds {
     private Integer count;
-    private Ads results;
+    private AdsNotFull results;
 
     public Integer getCount() {
         return count;
@@ -12,11 +12,11 @@ public class ResponseWrapperAds {
         this.count = count;
     }
 
-    public Ads getResults() {
+    public AdsNotFull getResults() {
         return results;
     }
 
-    public void setResults(Ads results) {
+    public void setResults(AdsNotFull results) {
         this.results = results;
     }
 }

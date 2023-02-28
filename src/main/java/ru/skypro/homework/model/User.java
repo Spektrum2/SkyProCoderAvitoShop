@@ -3,19 +3,20 @@ package ru.skypro.homework.model;
 import java.util.Objects;
 
 public class User {
+    long id;
     String email;
     String firstName;
-    int id;
     String lastName;
     String phone;
     String regDate;
     String image;
 
+    public User() {
+    }
 
-    public User(String email, String firstName, int id, String lastName, String phone, String regDate, String image) {
+    public User(String email, String firstName, String lastName, String phone, String regDate, String image) {
         this.email = email;
         this.firstName = firstName;
-        this.id = id;
         this.lastName = lastName;
         this.phone = phone;
         this.regDate = regDate;
@@ -38,7 +39,7 @@ public class User {
         this.firstName = firstName;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

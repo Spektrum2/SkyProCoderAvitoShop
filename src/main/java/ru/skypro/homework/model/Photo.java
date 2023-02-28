@@ -14,8 +14,10 @@ public class Photo {
 
     private byte[] data;
 
-    public Photo(long id, String filePath, long fileSize, String mediaType, byte[] data) {
-        this.id = id;
+    public Photo() {
+    }
+
+    public Photo(String filePath, long fileSize, String mediaType, byte[] data) {
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;

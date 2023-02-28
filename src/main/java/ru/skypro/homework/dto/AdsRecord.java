@@ -1,26 +1,22 @@
-package ru.skypro.homework.model;
+package ru.skypro.homework.dto;
 
-public class FullAds {
+public class AdsRecord {
+    long id;
     String authorFirstName;
     String authorLastName;
     String description;
     String email;
     String image;
     String phone;
-    int id;
     int price;
     String title;
 
-    public FullAds(String authorFirstName, String authorLastName, String description, String email, String image, String phone, int id, int price, String title) {
-        this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
-        this.description = description;
-        this.email = email;
-        this.image = image;
-        this.phone = phone;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
         this.id = id;
-        this.price = price;
-        this.title = title;
     }
 
     public String getAuthorFirstName() {
@@ -71,14 +67,6 @@ public class FullAds {
         this.phone = phone;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -93,20 +81,5 @@ public class FullAds {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return "FullAds{" +
-                "authorFirstName='" + authorFirstName + '\'' +
-                ", authorLastName='" + authorLastName + '\'' +
-                ", description='" + description + '\'' +
-                ", email='" + email + '\'' +
-                ", image='" + image + '\'' +
-                ", phone='" + phone + '\'' +
-                ", id=" + id +
-                ", price=" + price +
-                ", title='" + title + '\'' +
-                '}';
     }
 }

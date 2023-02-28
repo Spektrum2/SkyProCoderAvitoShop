@@ -2,7 +2,7 @@ package ru.skypro.homework.dto;
 
 public class ResponseWrapperComment {
     private Integer count;
-    private Comment results;
+    private CommentRecord results;
 
     public Integer getCount() {
         return count;
@@ -12,11 +12,11 @@ public class ResponseWrapperComment {
         this.count = count;
     }
 
-    public Comment getResults() {
+    public CommentRecord getResults() {
         return results;
     }
 
-    public void setResults(Comment results) {
+    public void setResults(CommentRecord results) {
         this.results = results;
     }
 }
