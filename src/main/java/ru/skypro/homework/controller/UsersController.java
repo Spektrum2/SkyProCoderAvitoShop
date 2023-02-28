@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
-import ru.skypro.homework.service.PhotoService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
-import java.util.Collection;
 
 @RestController
 @RequestMapping("users")

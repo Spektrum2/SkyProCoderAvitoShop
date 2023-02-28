@@ -1,8 +1,10 @@
 package ru.skypro.homework.dto;
 
+import java.util.List;
+
 public class ResponseWrapperAds {
     private Integer count;
-    private AdsNotFull results;
+    private List<AdsNotFull> results;
 
     public Integer getCount() {
         return count;
@@ -12,11 +14,11 @@ public class ResponseWrapperAds {
         this.count = count;
     }
 
-    public AdsNotFull getResults() {
+    public List<AdsNotFull> getResults() {
         return results;
     }
 
-    public void setResults(AdsNotFull results) {
+    public void setResults(List<AdsNotFull> results) {
         this.results = results;
     }
 }

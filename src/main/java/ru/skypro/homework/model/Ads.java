@@ -1,20 +1,30 @@
 package ru.skypro.homework.model;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
 public class Ads {
-    long id;
-    String authorFirstName;
-    String authorLastName;
-    String description;
-    String email;
-    String image;
-    String phone;
-    int price;
-    String title;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String authorFirstName;
+    private String authorLastName;
+    private String description;
+    private String email;
+    private String phone;
+    private BigDecimal price;
+    private String title;
+    @OneToOne
+    private Image image;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User user;
 
     public Ads() {
     }
 
-    public Ads(String authorFirstName, String authorLastName, String description, String email, String image, String phone, int price, String title) {
+    public Ads(String authorFirstName, String authorLastName, String description, String email, Image image, String phone, BigDecimal price, String title) {
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
         this.description = description;
@@ -57,11 +67,11 @@ public class Ads {
         this.email = email;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 
@@ -81,11 +91,11 @@ public class Ads {
         this.id = id;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

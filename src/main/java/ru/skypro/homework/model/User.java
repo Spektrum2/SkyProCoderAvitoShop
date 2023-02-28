@@ -1,20 +1,36 @@
 package ru.skypro.homework.model;
 
+import ru.skypro.homework.dto.Role;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 public class User {
-    long id;
-    String email;
-    String firstName;
-    String lastName;
-    String phone;
-    String regDate;
-    String image;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private LocalDateTime regDate;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    @OneToOne
+    private Image image;
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
+    @OneToMany(mappedBy = "user")
+    private List<Ads> ads;
 
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String phone, String regDate, String image) {
+    public User(String email, String firstName, String lastName, String phone, LocalDateTime regDate, Image image) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -63,20 +79,28 @@ public class User {
         this.phone = phone;
     }
 
-    public String getRegDate() {
+    public LocalDateTime getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(String regDate) {
+    public void setRegDate(LocalDateTime regDate) {
         this.regDate = regDate;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -84,24 +108,24 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Objects.equals(regDate, user.regDate) && Objects.equals(image, user.image);
+        return id == user.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, id, lastName, phone, regDate, image);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
+                "id=" + id +
+                ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
-                ", id=" + id +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", regDate='" + regDate + '\'' +
-                ", image='" + image + '\'' +
+                ", image=" + image +
                 '}';
     }
 }

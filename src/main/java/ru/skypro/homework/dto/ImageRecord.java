@@ -1,6 +1,6 @@
 package ru.skypro.homework.dto;
 
-public class PhotoRecord {
+public class ImageRecord {
     private long id;
     private String mediaType;
     private String url;

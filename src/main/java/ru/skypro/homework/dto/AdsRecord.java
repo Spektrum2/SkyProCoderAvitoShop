@@ -1,15 +1,18 @@
 package ru.skypro.homework.dto;
 
+import java.math.BigDecimal;
+
 public class AdsRecord {
-    long id;
-    String authorFirstName;
-    String authorLastName;
-    String description;
-    String email;
-    String image;
-    String phone;
-    int price;
-    String title;
+    private long id;
+    private String authorFirstName;
+    private String authorLastName;
+    private String description;
+    private String email;
+    private String phone;
+    private BigDecimal price;
+    private String title;
+    private ImageRecord imageRecord;
+    private UserRecord userRecord;
 
     public long getId() {
         return id;
@@ -51,12 +54,12 @@ public class AdsRecord {
         this.email = email;
     }
 
-    public String getImage() {
-        return image;
+    public ImageRecord getImageRecord() {
+        return imageRecord;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImage(ImageRecord imageRecord) {
+        this.imageRecord = imageRecord;
     }
 
     public String getPhone() {
@@ -67,11 +70,11 @@ public class AdsRecord {
         this.phone = phone;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -81,5 +84,17 @@ public class AdsRecord {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setImageRecord(ImageRecord imageRecord) {
+        this.imageRecord = imageRecord;
+    }
+
+    public UserRecord getUserRecord() {
+        return userRecord;
+    }
+
+    public void setUserRecord(UserRecord userRecord) {
+        this.userRecord = userRecord;
     }
 }

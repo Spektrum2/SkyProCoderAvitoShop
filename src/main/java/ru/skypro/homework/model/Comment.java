@@ -1,16 +1,24 @@
 package ru.skypro.homework.model;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
 public class Comment {
-    long id;
-    int author;
-    String createdAt;
-    String text;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private LocalDateTime createdAt;
+    private String text;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User user;
 
     public Comment() {
     }
 
-    public Comment(int author, String createdAt, String text) {
-        this.author = author;
+    public Comment(User user, LocalDateTime createdAt, String text) {
+        this.user = user;
         this.createdAt = createdAt;
         this.text = text;
     }
@@ -23,19 +31,19 @@ public class Comment {
         this.id = id;
     }
 
-    public int getAuthor() {
-        return author;
+    public User getAuthor() {
+        return user;
     }
 
-    public void setAuthor(int author) {
-        this.author = author;
+    public void setAuthor(User user) {
+        this.user = user;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

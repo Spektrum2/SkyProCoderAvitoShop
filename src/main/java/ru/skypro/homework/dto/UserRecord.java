@@ -1,13 +1,16 @@
 package ru.skypro.homework.dto;
 
+import java.time.LocalDateTime;
+
 public class UserRecord {
-    long id;
-    String email;
-    String firstName;
-    String lastName;
-    String phone;
-    String regDate;
-    String image;
+    private long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private LocalDateTime regDate;
+    private Role role;
+    private ImageRecord imageRecord;
 
     public long getId() {
         return id;
@@ -49,19 +52,31 @@ public class UserRecord {
         this.phone = phone;
     }
 
-    public String getRegDate() {
+    public LocalDateTime getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(String regDate) {
+    public void setRegDate(LocalDateTime regDate) {
         this.regDate = regDate;
     }
 
-    public String getImage() {
-        return image;
+    public ImageRecord getImageRecord() {
+        return imageRecord;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImage(ImageRecord imageRecord) {
+        this.imageRecord = imageRecord;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setImageRecord(ImageRecord imageRecord) {
+        this.imageRecord = imageRecord;
     }
 }

@@ -1,9 +1,15 @@
 package ru.skypro.homework.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Objects;
-
-public class Photo {
+@Entity
+public class Image {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String filePath;
@@ -14,10 +20,10 @@ public class Photo {
 
     private byte[] data;
 
-    public Photo() {
+    public Image() {
     }
 
-    public Photo(String filePath, long fileSize, String mediaType, byte[] data) {
+    public Image(String filePath, long fileSize, String mediaType, byte[] data) {
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
@@ -68,20 +74,18 @@ public class Photo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Photo photo = (Photo) o;
-        return id == photo.id && fileSize == photo.fileSize && Objects.equals(filePath, photo.filePath) && Objects.equals(mediaType, photo.mediaType) && Arrays.equals(data, photo.data);
+        Image image = (Image) o;
+        return id == image.id;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, filePath, fileSize, mediaType);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "Photo{" +
+        return "Image{" +
                 "id=" + id +
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +

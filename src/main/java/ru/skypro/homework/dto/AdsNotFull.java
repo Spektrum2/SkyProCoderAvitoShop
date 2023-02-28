@@ -1,18 +1,20 @@
 package ru.skypro.homework.dto;
 
-public class AdsNotFull {
-    private Integer id;
-    private Integer author;
-    private String image;
-    private Integer price;
-    private String title;
+import java.math.BigDecimal;
 
-    public Integer getAuthor() {
-        return author;
+public class AdsNotFull {
+    private long id;
+    private String image;
+    private BigDecimal price;
+    private String title;
+    private UserRecord userRecord;
+
+    public long getId() {
+        return id;
     }
 
-    public void setAuthor(Integer author) {
-        this.author = author;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getImage() {
@@ -23,19 +25,11 @@ public class AdsNotFull {
         this.image = image;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -45,5 +39,13 @@ public class AdsNotFull {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public UserRecord getUserRecord() {
+        return userRecord;
+    }
+
+    public void setUserRecord(UserRecord userRecord) {
+        this.userRecord = userRecord;
     }
 }

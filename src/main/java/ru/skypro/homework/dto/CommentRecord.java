@@ -1,33 +1,27 @@
 package ru.skypro.homework.dto;
 
+import java.time.LocalDateTime;
+
 public class CommentRecord {
-        private Integer id;
-        private Integer author;
-        private String createdAt;
+        private long id;
+        private LocalDateTime createdAt;
         private String text;
+        private UserRecord userRecord;
 
-        public Integer getAuthor() {
-                return author;
-        }
-
-        public void setAuthor(Integer author) {
-                this.author = author;
-        }
-
-        public String getCreatedAt() {
-                return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-        }
-
-        public Integer getId() {
+        public long getId() {
                 return id;
         }
 
-        public void setId(Integer id) {
+        public void setId(long id) {
                 this.id = id;
+        }
+
+        public LocalDateTime getCreatedAt() {
+                return createdAt;
+        }
+
+        public void setCreatedAt(LocalDateTime createdAt) {
+                this.createdAt = createdAt;
         }
 
         public String getText() {
@@ -36,5 +30,13 @@ public class CommentRecord {
 
         public void setText(String text) {
                 this.text = text;
+        }
+
+        public UserRecord getUserRecord() {
+                return userRecord;
+        }
+
+        public void setUserRecord(UserRecord userRecord) {
+                this.userRecord = userRecord;
         }
 }
