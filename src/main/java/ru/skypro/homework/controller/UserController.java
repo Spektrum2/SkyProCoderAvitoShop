@@ -15,10 +15,10 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("users")
-public class UsersController {
+public class UserController {
     private final UserService userService;
 
-    public UsersController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
     @Operation(
