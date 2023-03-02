@@ -1,24 +1,10 @@
 package ru.skypro.homework.dto;
 
+import lombok.Data;
+
 import java.util.List;
-
+@Data
 public class ResponseWrapperAds {
-    private Integer count;
-    private List<AdsNotFull> results;
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public List<AdsNotFull> getResults() {
-        return results;
-    }
-
-    public void setResults(List<AdsNotFull> results) {
-        this.results = results;
-    }
+    private int count;
+    private List<AdsRecord> results;
 }

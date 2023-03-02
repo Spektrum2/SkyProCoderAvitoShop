@@ -90,7 +90,7 @@ public class UserController {
             tags = "Пользователи"
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/me/image")
-    public void updateUserImage(@RequestBody MultipartFile multipartFile) throws IOException {
+    public void updateUserImage(@RequestPart("image") MultipartFile multipartFile) throws IOException {
         userService.updateUserImage(multipartFile);
     }
 }

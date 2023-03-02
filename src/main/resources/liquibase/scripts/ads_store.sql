@@ -33,11 +33,7 @@ CREATE TABLE users
 CREATE TABLE ads
 (
     id                BIGSERIAL PRIMARY KEY,
-    author_first_name TEXT,
-    author_last_name  TEXT,
     description       TEXT,
-    email             TEXT,
-    phone             TEXT,
     price             NUMERIC(7, 2),
     title             TEXT,
     image_id          BIGINT REFERENCES image (id),

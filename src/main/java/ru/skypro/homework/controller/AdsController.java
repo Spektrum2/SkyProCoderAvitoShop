@@ -49,15 +49,15 @@ public class AdsController {
                             description = "addAds",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = AdsNotFull.class)
+                                    schema = @Schema(implementation = AdsRecord.class)
                             )
                     )
             },
             tags = "Объявления"
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public AdsNotFull addAds(@RequestBody CreateAds createAds,
-                             @RequestBody MultipartFile multipartFile) throws IOException {
+    public AdsRecord addAds(@RequestPart("properties") CreateAds createAds,
+                            @RequestPart("image") MultipartFile multipartFile) throws IOException {
         return adsService.addAds(createAds, multipartFile);
     }
 
@@ -108,14 +108,14 @@ public class AdsController {
                             description = "getFullAd",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = AdsRecord.class)
+                                    schema = @Schema(implementation = FullAds.class)
                             )
                     )
             },
             tags = "Объявления"
     )
     @GetMapping("/{id}")
-    public AdsRecord getFullAd(@PathVariable Long id) {
+    public FullAds getFullAd(@PathVariable Long id) {
         return adsService.getFullAd(id);
     }
 
@@ -142,15 +142,15 @@ public class AdsController {
                             description = "updateAds",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = AdsNotFull.class)
+                                    schema = @Schema(implementation = AdsRecord.class)
                             )
                     )
             },
             tags = "Объявления"
     )
     @PatchMapping("/{id}")
-    public AdsNotFull updateAds(@PathVariable Long id,
-                                @RequestBody CreateAds createAds) {
+    public AdsRecord updateAds(@PathVariable Long id,
+                               @RequestBody CreateAds createAds) {
         return adsService.updateAds(id, createAds);
     }
 
@@ -227,11 +227,9 @@ public class AdsController {
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}/image")
     public String updateAdsImage(@PathVariable Long id,
-                                        @RequestBody MultipartFile multipartFile) {
+                                 @RequestPart("image") MultipartFile multipartFile) {
         return adsService.updateAdsImage(id, multipartFile);
     }
-
-
 
 
 }

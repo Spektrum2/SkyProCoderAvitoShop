@@ -8,11 +8,7 @@ public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String authorFirstName;
-    private String authorLastName;
     private String description;
-    private String email;
-    private String phone;
     private BigDecimal price;
     private String title;
     @OneToOne
@@ -24,31 +20,20 @@ public class Ads {
     public Ads() {
     }
 
-    public Ads(String authorFirstName, String authorLastName, String description, String email, Image image, String phone, BigDecimal price, String title) {
-        this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
+    public Ads(String description, BigDecimal price, String title, Image image, User user) {
         this.description = description;
-        this.email = email;
-        this.image = image;
-        this.phone = phone;
         this.price = price;
         this.title = title;
+        this.image = image;
+        this.user = user;
     }
 
-    public String getAuthorFirstName() {
-        return authorFirstName;
+    public long getId() {
+        return id;
     }
 
-    public void setAuthorFirstName(String authorFirstName) {
-        this.authorFirstName = authorFirstName;
-    }
-
-    public String getAuthorLastName() {
-        return authorLastName;
-    }
-
-    public void setAuthorLastName(String authorLastName) {
-        this.authorLastName = authorLastName;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -57,38 +42,6 @@ public class Ads {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public BigDecimal getPrice() {
@@ -107,18 +60,31 @@ public class Ads {
         this.title = title;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
-        return "FullAds{" +
-                "authorFirstName='" + authorFirstName + '\'' +
-                ", authorLastName='" + authorLastName + '\'' +
+        return "Ads{" +
+                "id=" + id +
                 ", description='" + description + '\'' +
-                ", email='" + email + '\'' +
-                ", image='" + image + '\'' +
-                ", phone='" + phone + '\'' +
-                ", id=" + id +
                 ", price=" + price +
                 ", title='" + title + '\'' +
+                ", image=" + image +
+                ", user=" + user +
                 '}';
     }
 }

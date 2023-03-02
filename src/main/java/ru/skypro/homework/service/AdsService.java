@@ -13,7 +13,7 @@ public class AdsService {
         return null;
     }
 
-    public AdsNotFull addAds(CreateAds createAds, MultipartFile multipartFile) throws IOException {
+    public AdsRecord addAds(CreateAds createAds, MultipartFile multipartFile) throws IOException {
         return null;
     }
 
@@ -25,14 +25,14 @@ public class AdsService {
         return null;
     }
 
-    public AdsRecord getFullAd(Long id) {
+    public FullAds getFullAd(Long id) {
         return null;
     }
 
     public void removeAds(Long id) {
     }
 
-    public AdsNotFull updateAds(Long id, CreateAds createAds) {
+    public AdsRecord updateAds(Long id, CreateAds createAds) {
         return null;
     }
 
