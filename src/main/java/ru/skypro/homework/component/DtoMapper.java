@@ -2,7 +2,6 @@ package ru.skypro.homework.component;
 
 import org.mapstruct.*;
 
-import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.model.Ads;
 import ru.skypro.homework.model.Comment;
@@ -10,7 +9,6 @@ import ru.skypro.homework.model.User;
 
 import java.util.List;
 
-@Component
 @Mapper(componentModel = "spring")
 public interface DtoMapper {
 
@@ -23,7 +21,7 @@ public interface DtoMapper {
 
     RegisterReq toRegisterReq(User user);
 
-    @Mapping(target = "author", expression = "java(ads.getUser() != null ? ads.getUser().getFirstName() + \" \" + ads.getUser().getLastName() : null)")
+    @Mapping(target = "author", expression = "java(ads.getUser() != null ? (int) ads.getUser().getId() : null)")
     @Mapping(target = "image", expression = "java(ads.getImage() != null ? \"http://localhost:8080/ads/\" + ads.getImage().getId() + \"/image\" : null)")
     AdsRecord toAdsDto(Ads ads);
 
@@ -36,7 +34,7 @@ public interface DtoMapper {
     @Mapping(target = "phone", expression = "java(ads.getUser() != null ? ads.getUser().getPhone() : null)")
     FullAds toFullAds(Ads ads);
 
-    @Mapping(target = "author", expression = "java(comment.getUser() != null ? comment.getUser().getFirstName() + \" \" + comment.getUser().getLastName() : null)")
+    @Mapping(target = "author", expression = "java(comment.getUser() != null ? (int) comment.getUser().getId() : null)")
     @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd.MM.yyyy HH:mm:ss")
     CommentRecord toCommentDto(Comment comment);
 

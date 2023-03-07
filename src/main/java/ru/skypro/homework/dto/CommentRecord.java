@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CommentRecord {
-    private String author;
+    private int author;
     private String createdAt;
     private int id;
     private String text;
