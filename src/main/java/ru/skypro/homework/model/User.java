@@ -13,15 +13,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String userName;
     private String firstName;
     private String lastName;
+    private String password;
     private String email;
     private String phone;
     private LocalDateTime regDate;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne
-    private Image image;
+    private Avatar avatar;
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
     @OneToMany(mappedBy = "user")
@@ -30,21 +32,33 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String phone, LocalDateTime regDate, Image image) {
-        this.email = email;
+    public User(long id, String userName, String firstName, String lastName, String password, String email, String phone, LocalDateTime regDate, Role role, Avatar avatar) {
+        this.id = id;
+        this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
+        this.email = email;
         this.phone = phone;
         this.regDate = regDate;
-        this.image = image;
+        this.role = role;
+        this.avatar = avatar;
     }
 
-    public String getEmail() {
-        return email;
+    public long getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstName() {
@@ -55,20 +69,28 @@ public class User {
         this.firstName = firstName;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {
@@ -87,20 +109,36 @@ public class User {
         this.regDate = regDate;
     }
 
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Ads> getAds() {
+        return ads;
+    }
+
+    public void setAds(List<Ads> ads) {
+        this.ads = ads;
     }
 
     @Override
@@ -120,12 +158,17 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", regDate='" + regDate + '\'' +
-                ", image=" + image +
+                ", regDate=" + regDate +
+                ", role=" + role +
+                ", avatar=" + avatar +
+                ", comments=" + comments +
+                ", ads=" + ads +
                 '}';
     }
 }

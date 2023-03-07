@@ -31,14 +31,6 @@ public class Comment {
         this.id = id;
     }
 
-    public User getAuthor() {
-        return user;
-    }
-
-    public void setAuthor(User user) {
-        this.user = user;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -53,5 +45,13 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

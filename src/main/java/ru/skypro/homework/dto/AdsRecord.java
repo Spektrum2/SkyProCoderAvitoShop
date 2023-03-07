@@ -9,6 +9,4 @@ public class AdsRecord {
     private int id;
     private int price;
     private String title;
-
-
 }
