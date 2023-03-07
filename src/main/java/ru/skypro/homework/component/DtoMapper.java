@@ -42,4 +42,14 @@ public interface DtoMapper {
 
     @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd.MM.yyyy HH:mm:ss")
     Comment toCommentEntity(CommentRecord commentRecord);
+
+    default ResponseWrapperAds toResponseWrapperAds(List<Ads> results){
+        return toResponseWrapperAds(results.size(), results);
+    }
+    ResponseWrapperAds toResponseWrapperAds(int count, List<Ads> results);
+
+    default ResponseWrapperComment toResponseWrapperComment(List<Comment> results){
+        return toResponseWrapperComment(results.size(), results);
+    }
+    ResponseWrapperComment toResponseWrapperComment(int count, List<Comment> results);
 }
