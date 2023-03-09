@@ -10,7 +10,7 @@ public class FullAds {
     private String email;
     private String image;
     private String phone;
-    private int id;
+    private int pk;
     private int price;
     private String title;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 public class AdsRecord {
     private int author;
     private String image;
-    private int id;
+    private int pk;
     private int price;
     private String title;
 }

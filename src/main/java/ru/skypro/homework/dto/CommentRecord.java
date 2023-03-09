@@ -6,6 +6,6 @@ import lombok.Data;
 public class CommentRecord {
     private int author;
     private String createdAt;
-    private int id;
+    private int pk;
     private String text;
 }
