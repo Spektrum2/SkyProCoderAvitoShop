@@ -14,6 +14,11 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "ads_id")
+    private Ads ads;
+
+
     public Comment() {
     }
 
@@ -53,5 +58,13 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Ads getAds() {
+        return ads;
+    }
+
+    public void setAds(Ads ads) {
+        this.ads = ads;
     }
 }

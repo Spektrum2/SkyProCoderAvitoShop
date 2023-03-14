@@ -2,6 +2,7 @@ package ru.skypro.homework.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class Ads {
@@ -16,6 +17,9 @@ public class Ads {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User user;
+
+    @OneToMany(mappedBy = "ads")
+    private List<Comment> comments;
 
     public Ads() {
     }
@@ -74,6 +78,14 @@ public class Ads {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

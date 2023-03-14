@@ -30,7 +30,7 @@ CREATE TABLE avatar
 CREATE TABLE users
 (
     id         BIGSERIAL PRIMARY KEY,
-    user_name   TEXT,
+    user_name  TEXT,
     first_name TEXT,
     last_name  TEXT,
     password   VARCHAR(16),
@@ -62,7 +62,8 @@ CREATE TABLE comment
     id         BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP,
     text       TEXT,
-    author_id  BIGINT REFERENCES users (id)
+    author_id  BIGINT REFERENCES users (id),
+    ads_id     BIGINT REFERENCES ads (id)
 );
 
 
