@@ -7,17 +7,22 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
+import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
+    private final AvatarService avatarService;
 
-    public UserService(UserRepository userRepository, DtoMapper dtoMapper) {
+    public UserService(UserRepository userRepository, DtoMapper dtoMapper, AvatarService avatarService) {
         this.userRepository = userRepository;
         this.dtoMapper = dtoMapper;
+        this.avatarService = avatarService;
     }
 
     public NewPassword setPassword(NewPassword newPassword) {
@@ -32,9 +37,18 @@ public class UserService {
     }
 
     public UserRecord updateUser(UserRecord userRecord) {
-        return null;
+        logger.info("Was invoked method getUser");
+        User newUser = userRepository.findById(1L).get();
+        newUser.setFirstName(userRecord.getFirstName());
+        newUser.setLastName(userRecord.getLastName());
+        newUser.setPhone(userRecord.getPhone());
+        return dtoMapper.toUserDto(userRepository.save(newUser));
     }
 
-    public void updateUserImage(MultipartFile multipartFile) {
+    public void updateUserImage(MultipartFile multipartFile) throws IOException {
+        logger.info("Was invoked method updateUser");
+        User newUser = userRepository.findById(1L).get();
+        newUser.setAvatar(avatarService.uploadAvatar(multipartFile));
+        userRepository.save(newUser);
     }
 }

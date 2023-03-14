@@ -28,7 +28,7 @@ public class AvatarService {
         this.avatarRepository = avatarRepository;
     }
 
-    public void uploadAvatar(MultipartFile multipartFile) throws IOException {
+    public Avatar uploadAvatar(MultipartFile multipartFile) throws IOException {
         logger.info("Was invoked method for upload avatar");
         byte[] data = multipartFile.getBytes();
 
@@ -42,7 +42,7 @@ public class AvatarService {
         Files.deleteIfExists(path);
         Files.write(path, data);
         avatar.setFilePath(path.toString());
-        avatarRepository.save(avatar);
+        return avatarRepository.save(avatar);
     }
 
     private Avatar creat(long size, String contentType, byte[] data) {
