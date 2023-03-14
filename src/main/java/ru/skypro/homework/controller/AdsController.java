@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.model.Image;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 

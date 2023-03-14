@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
-import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.service.AvatarService;
 import ru.skypro.homework.service.UserService;
 

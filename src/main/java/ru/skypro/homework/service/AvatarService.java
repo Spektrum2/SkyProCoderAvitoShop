@@ -55,6 +55,7 @@ public class AvatarService {
     }
 
     public Pair<String, byte[]> readAvatar(long id) {
+        logger.info("Was invoked method for read avatar");
         Avatar avatar = avatarRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("There is not avatar with id = {}", id);
