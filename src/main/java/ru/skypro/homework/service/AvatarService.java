@@ -3,8 +3,10 @@ package ru.skypro.homework.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.exception.AvatarNotFoundException;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.repository.AvatarRepository;
 
@@ -50,5 +52,14 @@ public class AvatarService {
         avatar.setFileSize(size);
         avatar.setMediaType(contentType);
         return avatarRepository.save(avatar);
+    }
+
+    public Pair<String, byte[]> readAvatar(long id) {
+        Avatar avatar = avatarRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not avatar with id = {}", id);
+                    return new AvatarNotFoundException(id);
+                });
+        return Pair.of(avatar.getMediaType(), avatar.getData());
     }
 }

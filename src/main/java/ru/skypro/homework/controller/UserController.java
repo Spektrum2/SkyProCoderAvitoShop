@@ -4,24 +4,30 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
+import ru.skypro.homework.model.Avatar;
+import ru.skypro.homework.service.AvatarService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("users")
 public class UserController {
     private final UserService userService;
+    private final AvatarService avatarService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          AvatarService avatarService) {
         this.userService = userService;
+        this.avatarService = avatarService;
     }
 
     @Operation(
@@ -94,5 +100,24 @@ public class UserController {
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/me/image")
     public void updateUserImage(@RequestPart("image") MultipartFile multipartFile) throws IOException {
         userService.updateUserImage(multipartFile);
+    }
+
+    @Operation(
+            summary = "readAvatar",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "readAvatar"
+                    )
+            },
+            tags = "Пользователи"
+    )
+    @GetMapping("{id}/avatar")
+    public ResponseEntity<byte[]> readAvatar(@PathVariable Long id) {
+        Pair<String, byte[]> pair = avatarService.readAvatar(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(pair.getFirst()))
+                .contentLength(pair.getSecond().length)
+                .body(pair.getSecond());
     }
 }

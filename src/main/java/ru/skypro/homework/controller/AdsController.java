@@ -259,21 +259,18 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "readAvatarFromDb",
+            summary = "readImage",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "readAvatarFromDb",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Image.class)
-                            )
+                            description = "readImage"
                     )
-            }
+            },
+            tags = "Объявления"
     )
     @GetMapping("/{id}/image")
-    public ResponseEntity<byte[]> readAvatarFromDb(@Parameter(description = "Введите id фотографии", example = "1")
-                                                   @PathVariable long id) {
+    public ResponseEntity<byte[]> readImage(@Parameter(description = "Введите id image", example = "1")
+                                            @PathVariable Long id) {
         Pair<String, byte[]> pair = imageService.readImage(id);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(pair.getFirst()))

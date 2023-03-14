@@ -13,7 +13,7 @@ import java.util.List;
 public interface DtoMapper {
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
-    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/user/\" + user.getAvatar().getId() + \"/avatar\" : null)")
+    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/users/\" + user.getAvatar().getId() + \"/avatar\" : null)")
     UserRecord toUserDto(User user);
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
