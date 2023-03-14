@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public void updateUserImage(MultipartFile multipartFile) throws IOException {
-        logger.info("Was invoked method updateUser");
+        logger.info("Was invoked method updateUserImage");
         User newUser = userRepository.findById(1L).get();
         newUser.setAvatar(avatarService.uploadAvatar(multipartFile));
         userRepository.save(newUser);
