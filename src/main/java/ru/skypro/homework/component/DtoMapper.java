@@ -13,7 +13,7 @@ import java.util.List;
 public interface DtoMapper {
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
-    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"http://localhost:8080/user/\" + user.getAvatar().getId() + \"/avatar\" : null)")
+    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/user/\" + user.getAvatar().getId() + \"/avatar\" : null)")
     UserRecord toUserDto(User user);
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
@@ -26,7 +26,9 @@ public interface DtoMapper {
     @Mapping(target = "pk", source = "id")
     AdsRecord toAdsDto(Ads ads);
 
-    CreateAds toCreateAds(Ads ads);
+    CreateAds toCreateAdsDto(Ads ads);
+
+    Ads toCreateAdsEntity(CreateAds createAds);
 
     @Mapping(target = "authorFirstName", expression = "java(ads.getUser() != null ? ads.getUser().getFirstName() : null)")
     @Mapping(target = "authorLastName", expression = "java(ads.getUser() != null ? ads.getUser().getLastName() : null)")

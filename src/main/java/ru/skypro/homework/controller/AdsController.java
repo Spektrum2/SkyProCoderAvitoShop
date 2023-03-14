@@ -1,14 +1,19 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.model.Image;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.ImageService;
 
 import java.io.IOException;
 
@@ -17,9 +22,12 @@ import java.io.IOException;
 @RequestMapping("ads")
 public class AdsController {
     private final AdsService adsService;
+    private final ImageService imageService;
 
-    public AdsController(AdsService adsService) {
+    public AdsController(AdsService adsService,
+                         ImageService imageService) {
         this.adsService = adsService;
+        this.imageService = imageService;
     }
 
     @Operation(
@@ -212,6 +220,25 @@ public class AdsController {
     }
 
     @Operation(
+            summary = "getAdsMe",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "getAdsMe",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = CommentRecord.class)
+                            )
+                    )
+            },
+            tags = "Объявления"
+    )
+    @GetMapping(path = "/me")
+    public ResponseWrapperAds getAdsMe() {
+        return adsService.getAdsMe();
+    }
+
+    @Operation(
             summary = "updateAdsImage",
             responses = {
                     @ApiResponse(
@@ -229,6 +256,29 @@ public class AdsController {
     public String updateAdsImage(@PathVariable Long id,
                                  @RequestPart("image") MultipartFile multipartFile) {
         return adsService.updateAdsImage(id, multipartFile);
+    }
+
+    @Operation(
+            summary = "readAvatarFromDb",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "readAvatarFromDb",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Image.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> readAvatarFromDb(@Parameter(description = "Введите id фотографии", example = "1")
+                                                   @PathVariable long id) {
+        Pair<String, byte[]> pair = imageService.readImage(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(pair.getFirst()))
+                .contentLength(pair.getSecond().length)
+                .body(pair.getSecond());
     }
 
 
