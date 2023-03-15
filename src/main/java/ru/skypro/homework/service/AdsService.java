@@ -1,5 +1,6 @@
 package ru.skypro.homework.service;
 
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -7,15 +8,19 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdsNotFoundException;
+import ru.skypro.homework.exception.CommentNotFoundException;
 import ru.skypro.homework.model.Ads;
 import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class AdsService {
@@ -25,17 +30,20 @@ public class AdsService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final DtoMapper dtoMapper;
+    private final ImageRepository imageRepository;
 
     public AdsService(AdsRepository adsRepository,
                       CommentRepository commentRepository,
                       UserRepository userRepository,
                       ImageService imageService,
-                      DtoMapper dtoMapper) {
+                      DtoMapper dtoMapper,
+                      ImageRepository imageRepository) {
         this.adsRepository = adsRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.imageService = imageService;
         this.dtoMapper = dtoMapper;
+        this.imageRepository = imageRepository;
     }
 
     public ResponseWrapperAds getWrapperAds() {
@@ -62,14 +70,15 @@ public class AdsService {
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
         logger.info("Was invoked method addComments");
-        Comment comment = dtoMapper.toCommentEntity(commentRecord);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         Ads ads = adsRepository.findById(id).orElseThrow(() -> {
             logger.error("There is not ads with id = {}", id);
             return new AdsNotFoundException(id);
         });
-        comment.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
+        Comment comment = dtoMapper.toCommentEntity(commentRecord);
+        comment.setUser(ads.getUser());
         comment.setAds(ads);
-        comment.setUser(userRepository.findById(1L).orElse(null));
+        comment.setCreatedAt(localDateTime);
         return dtoMapper.toCommentDto(commentRepository.save(comment));
     }
 
@@ -83,25 +92,70 @@ public class AdsService {
     }
 
     public void removeAds(Long id) {
+        logger.info("Was invoked method removeAds");
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        commentRepository.deleteAll(ads.getComments());
+        adsRepository.deleteById(id);
     }
 
     public AdsRecord updateAds(Long id, CreateAds createAds) {
-        return null;
+        logger.info("Was invoked method updateAds");
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        ads.setDescription(createAds.getDescription());
+        ads.setPrice(BigDecimal.valueOf(createAds.getPrice()));
+        ads.setTitle(createAds.getTitle());
+        return dtoMapper.toAdsDto(adsRepository.save(ads));
     }
 
-    public CommentRecord getCommentsAd(Long id, Long commentId) {
-        return null;
+    public CommentRecord getCommentsAd(Long id, Long commentId) { //??
+        logger.info("Was invoked method updateComments");
+        Comment comment = commentRepository.findById(commentId).get();
+        return dtoMapper.toCommentDto(comment);
     }
 
-    public void deleteComments(Long id, Long commentId) {
+    public void deleteComments(Long id, Long commentId) throws RuntimeException {
+        logger.info("Was invoked method deleteComments");
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->{
+            logger.error("There is not ads with id = {}", commentId);
+            return new CommentNotFoundException(commentId);
+        });
+        if (comment.getAds().getId() == id) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new RuntimeException("ID не совпадают");
+        }
     }
 
-    public CommentRecord updateComments(Long id, Long commentId, CommentRecord commentRecord) {
-        return null;
+    public CommentRecord updateComments(Long id, Long commentId, CommentRecord commentRecord) { //??
+        logger.info("Was invoked method updateComments");
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        Comment comment = commentRepository.findById(commentId).get();
+        comment.setText(commentRecord.getText());
+        comment.setUser(ads.getUser());
+        comment.setCreatedAt(localDateTime);
+        return dtoMapper.toCommentDto(commentRepository.save(comment));
     }
 
-    public String updateAdsImage(Long id, MultipartFile multipartFile) {
-        return null;
+    public void updateAdsImage(Long id, MultipartFile multipartFile) throws IOException {
+        logger.info("Was invoked method updateAdsImage");
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        Long oldImage = ads.getImage().getId();
+        ads.setImage(imageService.uploadImage(multipartFile));
+        adsRepository.save(ads);
+        imageRepository.deleteById(oldImage);
     }
 
     public ResponseWrapperAds getAdsMe() {

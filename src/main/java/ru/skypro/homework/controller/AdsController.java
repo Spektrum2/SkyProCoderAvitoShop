@@ -193,7 +193,7 @@ public class AdsController {
     )
     @DeleteMapping("/{adId}/comments/{commentId}")
     public void deleteComments(@PathVariable Long adId,
-                               @PathVariable Long commentId) {
+                               @PathVariable Long commentId) throws RuntimeException {
         adsService.deleteComments(adId, commentId);
     }
 
@@ -252,9 +252,9 @@ public class AdsController {
             tags = "Объявления"
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}/image")
-    public String updateAdsImage(@PathVariable Long id,
-                                 @RequestPart("image") MultipartFile multipartFile) {
-        return adsService.updateAdsImage(id, multipartFile);
+    public void updateAdsImage(@PathVariable Long id,
+                                 @RequestPart("image") MultipartFile multipartFile) throws IOException {
+        adsService.updateAdsImage(id, multipartFile);
     }
 
     @Operation(
