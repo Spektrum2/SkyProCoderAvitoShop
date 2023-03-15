@@ -8,11 +8,13 @@ import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdsNotFoundException;
 import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class AdsService {
@@ -49,11 +51,18 @@ public class AdsService {
     }
 
     public ResponseWrapperComment getComments(Long id) {
-        return null;
+        logger.info("Was invoked method getComments");
+        List<Comment> comment = commentRepository.findAll();
+        return dtoMapper.toResponseWrapperComment(comment);
     }
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
-        return null;
+        logger.info("Was invoked method addComments");
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+
     }
 
     public FullAds getFullAd(Long id) {
