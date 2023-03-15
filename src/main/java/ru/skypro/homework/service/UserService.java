@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
+import ru.skypro.homework.exception.UserForbiddenException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
@@ -27,7 +28,18 @@ public class UserService {
     }
 
     public NewPassword setPassword(NewPassword newPassword) {
-        return null;
+        logger.info("Was invoked method setPassword");
+        User user = userRepository.findById(1L).orElseThrow(() -> {
+            logger.error("There is not user with id = {}", 1L);
+            return new UserNotFoundException(1L);
+        });
+        if (user.getPassword().equals(newPassword.getCurrentPassword())) {
+            user.setPassword(newPassword.getNewPassword());
+            userRepository.save(user);
+            return newPassword;
+        } else {
+            throw new UserForbiddenException();
+        }
     }
 
     public UserRecord getUser() {

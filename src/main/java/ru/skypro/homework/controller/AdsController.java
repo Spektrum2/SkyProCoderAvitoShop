@@ -162,11 +162,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getCommentsAd",
+            summary = "getComment",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getCommentsAd",
+                            description = "getComment",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
@@ -176,9 +176,9 @@ public class AdsController {
             tags = "Объявления"
     )
     @GetMapping("/{adId}/comments/{commentId}")
-    public CommentRecord getCommentsAd(@PathVariable Long adId,
-                                       @PathVariable Long commentId) {
-        return adsService.getCommentsAd(adId, commentId);
+    public CommentRecord getComment(@PathVariable Long adId,
+                                    @PathVariable Long commentId) {
+        return adsService.getComment(adId, commentId);
     }
 
     @Operation(
@@ -253,7 +253,7 @@ public class AdsController {
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}/image")
     public void updateAdsImage(@PathVariable Long id,
-                                 @RequestPart("image") MultipartFile multipartFile) throws IOException {
+                               @RequestPart("image") MultipartFile multipartFile) throws IOException {
         adsService.updateAdsImage(id, multipartFile);
     }
 

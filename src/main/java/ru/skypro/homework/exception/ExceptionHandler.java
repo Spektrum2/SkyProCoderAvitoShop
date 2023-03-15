@@ -30,4 +30,22 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(String.format("Пользователь с id = %d не найден", e.getId()));
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<String> handlesCommentNotFoundException(CommentNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(String.format("Коментарий с id = %d не найден", e.getId()));
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(CommentForbiddenException.class)
+    public ResponseEntity<String> handlesCommentForbiddenException(CommentForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(String.format("Коментарий с id = %d не найден в текущем товаре", e.getId()));
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserForbiddenException.class)
+    public ResponseEntity<String> handlesCommentForbiddenException(UserForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("Текущий пароль введен неправильно");
+    }
 }

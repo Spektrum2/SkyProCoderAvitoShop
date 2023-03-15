@@ -1,6 +1,5 @@
 package ru.skypro.homework.service;
 
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdsNotFoundException;
+import ru.skypro.homework.exception.CommentForbiddenException;
 import ru.skypro.homework.exception.CommentNotFoundException;
 import ru.skypro.homework.model.Ads;
 import ru.skypro.homework.model.Comment;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
 public class AdsService {
@@ -61,20 +60,22 @@ public class AdsService {
 
     public ResponseWrapperComment getComments(Long id) {
         logger.info("Was invoked method getComments");
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
-        });
+        Ads ads = adsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", id);
+                    return new AdsNotFoundException(id);
+                });
         return dtoMapper.toResponseWrapperComment(ads.getComments());
     }
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
         logger.info("Was invoked method addComments");
         LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
-        });
+        Ads ads = adsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", id);
+                    return new AdsNotFoundException(id);
+                });
         Comment comment = dtoMapper.toCommentEntity(commentRecord);
         comment.setUser(ads.getUser());
         comment.setAds(ads);
@@ -84,19 +85,21 @@ public class AdsService {
 
     public FullAds getFullAd(Long id) {
         logger.info("Was invoked method getFullAd");
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
-        });
+        Ads ads = adsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", id);
+                    return new AdsNotFoundException(id);
+                });
         return dtoMapper.toFullAds(ads);
     }
 
     public void removeAds(Long id) {
         logger.info("Was invoked method removeAds");
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
-        });
+        Ads ads = adsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", id);
+                    return new AdsNotFoundException(id);
+                });
         commentRepository.deleteAll(ads.getComments());
         adsRepository.deleteById(id);
     }
@@ -113,37 +116,46 @@ public class AdsService {
         return dtoMapper.toAdsDto(adsRepository.save(ads));
     }
 
-    public CommentRecord getCommentsAd(Long id, Long commentId) { //??
-        logger.info("Was invoked method updateComments");
-        Comment comment = commentRepository.findById(commentId).get();
-        return dtoMapper.toCommentDto(comment);
+    public CommentRecord getComment(Long id, Long commentId) {
+        logger.info("Was invoked method getComment");
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> {
+                    logger.error("There is not comment with id = {}", commentId);
+                    return new CommentNotFoundException(commentId);
+                });
+        if (comment.getAds().getId() == id) {
+            return dtoMapper.toCommentDto(comment);
+        } else {
+            throw new CommentForbiddenException(commentId);
+        }
     }
 
     public void deleteComments(Long id, Long commentId) throws RuntimeException {
         logger.info("Was invoked method deleteComments");
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->{
-            logger.error("There is not ads with id = {}", commentId);
-            return new CommentNotFoundException(commentId);
-        });
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", commentId);
+                    return new CommentNotFoundException(commentId);
+                });
         if (comment.getAds().getId() == id) {
             commentRepository.deleteById(commentId);
         } else {
-            throw new RuntimeException("ID не совпадают");
+            throw new CommentForbiddenException(commentId);
         }
     }
 
-    public CommentRecord updateComments(Long id, Long commentId, CommentRecord commentRecord) { //??
+    public CommentRecord updateComments(Long id, Long commentId, CommentRecord commentRecord) {
         logger.info("Was invoked method updateComments");
-        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
+            logger.error("There is not comment with id = {}", commentId);
+            return new CommentNotFoundException(commentId);
         });
-        Comment comment = commentRepository.findById(commentId).get();
-        comment.setText(commentRecord.getText());
-        comment.setUser(ads.getUser());
-        comment.setCreatedAt(localDateTime);
-        return dtoMapper.toCommentDto(commentRepository.save(comment));
+        if (comment.getAds().getId() == id) {
+            comment.setText(commentRecord.getText());
+            return dtoMapper.toCommentDto(commentRepository.save(comment));
+        } else {
+            throw new CommentForbiddenException(commentId);
+        }
     }
 
     public void updateAdsImage(Long id, MultipartFile multipartFile) throws IOException {
