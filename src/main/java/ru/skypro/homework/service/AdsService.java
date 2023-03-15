@@ -14,6 +14,8 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class AdsService {
@@ -50,6 +52,7 @@ public class AdsService {
     }
 
     public ResponseWrapperComment getComments(Long id) {
+        logger.info("Was invoked method getComments");
         Ads ads = adsRepository.findById(id).orElseThrow(() -> {
             logger.error("There is not ads with id = {}", id);
             return new AdsNotFoundException(id);
@@ -58,11 +61,13 @@ public class AdsService {
     }
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
+        logger.info("Was invoked method addComments");
         Comment comment = dtoMapper.toCommentEntity(commentRecord);
         Ads ads = adsRepository.findById(id).orElseThrow(() -> {
             logger.error("There is not ads with id = {}", id);
             return new AdsNotFoundException(id);
         });
+        comment.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
         comment.setAds(ads);
         comment.setUser(userRepository.findById(1L).orElse(null));
         return dtoMapper.toCommentDto(commentRepository.save(comment));
