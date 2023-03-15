@@ -119,7 +119,7 @@ public class AdsService {
         return dtoMapper.toCommentDto(comment);
     }
 
-    public void deleteComments(Long id, Long commentId) throws RuntimeException {
+    public void deleteComments(Long id, Long commentId) throws IOException {
         logger.info("Was invoked method deleteComments");
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->{
             logger.error("There is not ads with id = {}", commentId);
@@ -128,7 +128,7 @@ public class AdsService {
         if (comment.getAds().getId() == id) {
             commentRepository.deleteById(commentId);
         } else {
-            throw new RuntimeException("ID не совпадают");
+            throw new IOException("ID не совпадают");
         }
     }
 

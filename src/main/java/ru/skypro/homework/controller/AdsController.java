@@ -193,7 +193,7 @@ public class AdsController {
     )
     @DeleteMapping("/{adId}/comments/{commentId}")
     public void deleteComments(@PathVariable Long adId,
-                               @PathVariable Long commentId) throws RuntimeException {
+                               @PathVariable Long commentId) throws IOException {
         adsService.deleteComments(adId, commentId);
     }
 
