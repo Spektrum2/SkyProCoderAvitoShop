@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 
@@ -38,17 +39,23 @@ public class UserService {
 
     public UserRecord updateUser(UserRecord userRecord) {
         logger.info("Was invoked method getUser");
-        User newUser = userRepository.findById(1L).get();
-        newUser.setFirstName(userRecord.getFirstName());
-        newUser.setLastName(userRecord.getLastName());
-        newUser.setPhone(userRecord.getPhone());
-        return dtoMapper.toUserDto(userRepository.save(newUser));
+        User user = userRepository.findById(1L).orElseThrow(() -> {
+            logger.error("There is not user with id = {}", 1L);
+            return new UserNotFoundException(1L);
+        });
+        user.setFirstName(userRecord.getFirstName());
+        user.setLastName(userRecord.getLastName());
+        user.setPhone(userRecord.getPhone());
+        return dtoMapper.toUserDto(userRepository.save(user));
     }
 
     public void updateUserImage(MultipartFile multipartFile) throws IOException {
         logger.info("Was invoked method updateUserImage");
-        User newUser = userRepository.findById(1L).get();
-        newUser.setAvatar(avatarService.uploadAvatar(multipartFile));
-        userRepository.save(newUser);
+        User user = userRepository.findById(1L).orElseThrow(() -> {
+            logger.error("There is not user with id = {}", 1L);
+            return new UserNotFoundException(1L);
+        });
+        user.setAvatar(avatarService.uploadAvatar(multipartFile));
+        userRepository.save(user);
     }
 }

@@ -8,6 +8,7 @@ import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdsNotFoundException;
 import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -49,11 +50,22 @@ public class AdsService {
     }
 
     public ResponseWrapperComment getComments(Long id) {
-        return null;
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        return dtoMapper.toResponseWrapperComment(ads.getComments());
     }
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
-        return null;
+        Comment comment = dtoMapper.toCommentEntity(commentRecord);
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is not ads with id = {}", id);
+            return new AdsNotFoundException(id);
+        });
+        comment.setAds(ads);
+        comment.setUser(userRepository.findById(1L).orElse(null));
+        return dtoMapper.toCommentDto(commentRepository.save(comment));
     }
 
     public FullAds getFullAd(Long id) {
