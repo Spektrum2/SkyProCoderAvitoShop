@@ -44,7 +44,7 @@ public class ExceptionHandler {
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(UserForbiddenException.class)
-    public ResponseEntity<String> handlesCommentForbiddenException(UserForbiddenException e) {
+    public ResponseEntity<String> handlesUserForbiddenException(UserForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body("Текущий пароль введен неправильно");
     }

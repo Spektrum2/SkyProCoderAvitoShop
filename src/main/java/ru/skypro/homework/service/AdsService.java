@@ -19,7 +19,6 @@ import ru.skypro.homework.repository.UserRepository;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Service
 public class AdsService {
@@ -70,7 +69,7 @@ public class AdsService {
 
     public CommentRecord addComments(Long id, CommentRecord commentRecord) {
         logger.info("Was invoked method addComments");
-        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDateTime localDateTime = LocalDateTime.now();
         Ads ads = adsRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("There is not ads with id = {}", id);
@@ -106,10 +105,11 @@ public class AdsService {
 
     public AdsRecord updateAds(Long id, CreateAds createAds) {
         logger.info("Was invoked method updateAds");
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> {
-            logger.error("There is not ads with id = {}", id);
-            return new AdsNotFoundException(id);
-        });
+        Ads ads = adsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("There is not ads with id = {}", id);
+                    return new AdsNotFoundException(id);
+                });
         ads.setDescription(createAds.getDescription());
         ads.setPrice(BigDecimal.valueOf(createAds.getPrice()));
         ads.setTitle(createAds.getTitle());
@@ -126,11 +126,12 @@ public class AdsService {
         if (comment.getAds().getId() == id) {
             return dtoMapper.toCommentDto(comment);
         } else {
+            logger.error("There is not comment in the product");
             throw new CommentForbiddenException(commentId);
         }
     }
 
-    public void deleteComments(Long id, Long commentId) throws RuntimeException {
+    public void deleteComments(Long id, Long commentId) {
         logger.info("Was invoked method deleteComments");
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> {
@@ -138,8 +139,9 @@ public class AdsService {
                     return new CommentNotFoundException(commentId);
                 });
         if (comment.getAds().getId() == id) {
-            commentRepository.deleteById(commentId);
+            commentRepository.delete(comment);
         } else {
+            logger.error("There is not comment in the product");
             throw new CommentForbiddenException(commentId);
         }
     }
@@ -154,6 +156,7 @@ public class AdsService {
             comment.setText(commentRecord.getText());
             return dtoMapper.toCommentDto(commentRepository.save(comment));
         } else {
+            logger.error("There is not comment in the product");
             throw new CommentForbiddenException(commentId);
         }
     }

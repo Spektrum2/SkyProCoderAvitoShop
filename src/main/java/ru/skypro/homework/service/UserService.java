@@ -38,6 +38,7 @@ public class UserService {
             userRepository.save(user);
             return newPassword;
         } else {
+            logger.error("The current password is incorrect");
             throw new UserForbiddenException();
         }
     }
