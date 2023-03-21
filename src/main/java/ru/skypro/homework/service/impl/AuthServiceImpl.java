@@ -44,22 +44,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean register(RegisterReq registerReq, Role role) {
         logger.info("Was invoke method register");
-        if (manager.userExists(registerReq.getUserName())) {
+        if (manager.userExists(registerReq.getUsername())) {
             return false;
         }
         manager.createUser(
                 User.withDefaultPasswordEncoder()
                         .password(registerReq.getPassword())
-                        .username(registerReq.getUserName())
+                        .username(registerReq.getUsername())
                         .roles(role.name())
                         .build()
         );
-        ru.skypro.homework.model.User user = userRepository.findByUserName(registerReq.getUserName());
+        ru.skypro.homework.model.User user = userRepository.findByUserName(registerReq.getUsername());
         user.setFirstName(registerReq.getFirstName());
         user.setLastName(registerReq.getLastName());
         user.setPhone(registerReq.getPhone());
         user.setRegDate(LocalDateTime.now());
-        user.setEmail(registerReq.getUserName());
+        user.setEmail(registerReq.getUsername());
         userRepository.save(user);
         return true;
     }

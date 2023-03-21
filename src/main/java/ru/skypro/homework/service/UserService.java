@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
-import ru.skypro.homework.exception.UserForbiddenException;
 import ru.skypro.homework.exception.UserNameNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.model.User;
@@ -39,23 +38,11 @@ public class UserService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
-    public NewPassword setPassword(NewPassword newPassword, Authentication authentication) {
+    public NewPassword setPassword(NewPassword newPassword) {
         logger.info("Was invoked method setPassword");
-        User user = userRepository.findByUserName(authentication.getName());
-        if (user == null) {
-            logger.error("There is not user with username = {}", authentication.getName());
-            throw new UserNameNotFoundException(authentication.getName());
-        }
-        if (user.getPassword().equals(newPassword.getCurrentPassword())) {
-            manager.updateUser(
-                    org.springframework.security.core.userdetails.User.withDefaultPasswordEncoder()
-                            .password(newPassword.getNewPassword())
-                            .build());
-            return newPassword;
-        } else {
-            logger.error("The current password is incorrect");
-            throw new UserForbiddenException();
-        }
+        String encryptedPassword = "{bcrypt}" + encoder.encode(newPassword.getNewPassword());
+        manager.changePassword(newPassword.getCurrentPassword(), encryptedPassword);
+        return newPassword;
     }
 
     public UserRecord getUser(Authentication authentication) {
@@ -68,24 +55,26 @@ public class UserService {
         return dtoMapper.toUserDto(user);
     }
 
-    public UserRecord updateUser(UserRecord userRecord) {
+    public UserRecord updateUser(UserRecord userRecord, Authentication authentication) {
         logger.info("Was invoked method getUser");
-        User user = userRepository.findById(1L).orElseThrow(() -> {
-            logger.error("There is not user with id = {}", 1L);
-            return new UserNotFoundException(1L);
-        });
+        User user = userRepository.findByUserName(authentication.getName());
+        if (user == null) {
+            logger.error("There is not user with username = {}", authentication.getName());
+            throw new UserNameNotFoundException(authentication.getName());
+        }
         user.setFirstName(userRecord.getFirstName());
         user.setLastName(userRecord.getLastName());
         user.setPhone(userRecord.getPhone());
         return dtoMapper.toUserDto(userRepository.save(user));
     }
 
-    public void updateUserImage(MultipartFile multipartFile) throws IOException {
+    public void updateUserImage(MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method updateUserImage");
-        User user = userRepository.findById(1L).orElseThrow(() -> {
-            logger.error("There is not user with id = {}", 1L);
-            return new UserNotFoundException(1L);
-        });
+        User user = userRepository.findByUserName(authentication.getName());
+        if (user == null) {
+            logger.error("There is not user with username = {}", authentication.getName());
+            throw new UserNameNotFoundException(authentication.getName());
+        }
         user.setAvatar(avatarService.uploadAvatar(multipartFile));
         userRepository.save(user);
     }
