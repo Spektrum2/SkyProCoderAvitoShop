@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
@@ -44,8 +45,8 @@ public class UserController {
             tags = "Пользователи"
     )
     @PostMapping("/set_password")
-    public NewPassword setPassword(@RequestBody NewPassword newPassword) {
-        return userService.setPassword(newPassword);
+    public NewPassword setPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
+        return userService.setPassword(newPassword, authentication);
     }
 
     @Operation(
@@ -63,8 +64,8 @@ public class UserController {
             tags = "Пользователи"
     )
     @GetMapping("/me")
-    public UserRecord getUser() {
-        return userService.getUser();
+    public UserRecord getUser(Authentication authentication) {
+        return userService.getUser(authentication);
     }
 
     @Operation(

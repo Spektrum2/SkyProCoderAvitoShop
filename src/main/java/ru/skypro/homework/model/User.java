@@ -13,15 +13,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "username")
     private String userName;
     private String firstName;
     private String lastName;
     private String password;
     private String email;
     private String phone;
+    private boolean enabled;
     private LocalDateTime regDate;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+
     @OneToOne
     private Avatar avatar;
     @OneToMany(mappedBy = "user")
@@ -32,7 +33,7 @@ public class User {
     public User() {
     }
 
-    public User(long id, String userName, String firstName, String lastName, String password, String email, String phone, LocalDateTime regDate, Role role, Avatar avatar) {
+    public User(long id, String userName, String firstName, String lastName, String password, String email, String phone, LocalDateTime regDate, Avatar avatar) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
@@ -41,7 +42,6 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.regDate = regDate;
-        this.role = role;
         this.avatar = avatar;
     }
 
@@ -109,14 +109,6 @@ public class User {
         this.regDate = regDate;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public Avatar getAvatar() {
         return avatar;
     }
@@ -139,6 +131,14 @@ public class User {
 
     public void setAds(List<Ads> ads) {
         this.ads = ads;
+    }
+
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -165,7 +165,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", regDate=" + regDate +
-                ", role=" + role +
                 ", avatar=" + avatar +
                 ", comments=" + comments +
                 ", ads=" + ads +

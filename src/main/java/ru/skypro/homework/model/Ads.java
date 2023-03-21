@@ -17,7 +17,6 @@ public class Ads {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User user;
-
     @OneToMany(mappedBy = "ads")
     private List<Comment> comments;
 

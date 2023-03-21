@@ -2,12 +2,17 @@ package ru.skypro.homework.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
 import ru.skypro.homework.exception.UserForbiddenException;
+import ru.skypro.homework.exception.UserNameNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
@@ -20,22 +25,32 @@ public class UserService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final AvatarService avatarService;
+    private final UserDetailsManager manager;
+    private final PasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository, DtoMapper dtoMapper, AvatarService avatarService) {
+    public UserService(UserRepository userRepository,
+                       DtoMapper dtoMapper,
+                       AvatarService avatarService,
+                       UserDetailsManager manager) {
         this.userRepository = userRepository;
         this.dtoMapper = dtoMapper;
         this.avatarService = avatarService;
+        this.manager = manager;
+        this.encoder = new BCryptPasswordEncoder();
     }
 
-    public NewPassword setPassword(NewPassword newPassword) {
+    public NewPassword setPassword(NewPassword newPassword, Authentication authentication) {
         logger.info("Was invoked method setPassword");
-        User user = userRepository.findById(1L).orElseThrow(() -> {
-            logger.error("There is not user with id = {}", 1L);
-            return new UserNotFoundException(1L);
-        });
+        User user = userRepository.findByUserName(authentication.getName());
+        if (user == null) {
+            logger.error("There is not user with username = {}", authentication.getName());
+            throw new UserNameNotFoundException(authentication.getName());
+        }
         if (user.getPassword().equals(newPassword.getCurrentPassword())) {
-            user.setPassword(newPassword.getNewPassword());
-            userRepository.save(user);
+            manager.updateUser(
+                    org.springframework.security.core.userdetails.User.withDefaultPasswordEncoder()
+                            .password(newPassword.getNewPassword())
+                            .build());
             return newPassword;
         } else {
             logger.error("The current password is incorrect");
@@ -43,11 +58,14 @@ public class UserService {
         }
     }
 
-    public UserRecord getUser() {
+    public UserRecord getUser(Authentication authentication) {
         logger.info("Was invoked method getUser");
-        return userRepository.findById(1L)
-                .map(dtoMapper::toUserDto)
-                .orElse(null);
+        User user = userRepository.findByUserName(authentication.getName());
+        if (user == null) {
+            logger.error("There is not user with username = {}", authentication.getName());
+            throw new UserNameNotFoundException(authentication.getName());
+        }
+        return dtoMapper.toUserDto(user);
     }
 
     public UserRecord updateUser(UserRecord userRecord) {

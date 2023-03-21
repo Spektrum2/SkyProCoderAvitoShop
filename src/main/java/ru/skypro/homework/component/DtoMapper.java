@@ -13,13 +13,12 @@ import java.util.List;
 public interface DtoMapper {
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
-    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/users/\" + user.getAvatar().getId() + \"/avatar\" : null)")
+//    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/users/\" + user.getAvatar().getId() + \"/avatar\" : null)")
+    @Mapping(target = "image", expression = "java(\"\")")
     UserRecord toUserDto(User user);
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
     User toUserEntity(UserRecord userRecord);
-
-    RegisterReq toRegisterReq(User user);
 
     @Mapping(target = "author", expression = "java(ads.getUser() != null ? (int) ads.getUser().getId() : null)")
     @Mapping(target = "image", expression = "java(ads.getImage() != null ? \"/ads/\" + ads.getImage().getId() + \"/image\" : null)")

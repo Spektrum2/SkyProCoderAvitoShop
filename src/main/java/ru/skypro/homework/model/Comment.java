@@ -13,11 +13,9 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "ads_id")
     private Ads ads;
-
 
     public Comment() {
     }

@@ -48,4 +48,10 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body("Текущий пароль введен неправильно");
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserNameNotFoundException.class)
+    public ResponseEntity<String> handleUserNameNotFoundException(UserNameNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Пользователь с username " + e.getUsername() + " не найден");
+    }
 }
