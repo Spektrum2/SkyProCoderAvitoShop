@@ -12,8 +12,9 @@ import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UserRecord;
 import ru.skypro.homework.exception.UserNameNotFoundException;
-import ru.skypro.homework.exception.UserNotFoundException;
+import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.model.User;
+import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 
 import java.io.IOException;
@@ -24,16 +25,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final AvatarService avatarService;
+    private final AvatarRepository avatarRepository;
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
 
     public UserService(UserRepository userRepository,
                        DtoMapper dtoMapper,
                        AvatarService avatarService,
+                       AvatarRepository avatarRepository,
                        UserDetailsManager manager) {
         this.userRepository = userRepository;
         this.dtoMapper = dtoMapper;
         this.avatarService = avatarService;
+        this.avatarRepository = avatarRepository;
         this.manager = manager;
         this.encoder = new BCryptPasswordEncoder();
     }
@@ -75,7 +79,11 @@ public class UserService {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
         }
+        Avatar oldAvatar = user.getAvatar();
         user.setAvatar(avatarService.uploadAvatar(multipartFile));
         userRepository.save(user);
+        if (oldAvatar != null) {
+            avatarRepository.delete(oldAvatar);
+        }
     }
 }
