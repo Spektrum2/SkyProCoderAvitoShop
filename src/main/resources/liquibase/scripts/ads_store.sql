@@ -46,7 +46,6 @@ CREATE TABLE users
 -- precondition-sql-check expectedResult:0 SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'authorities'
 CREATE TABLE authorities
 (
-
     id        BIGSERIAL PRIMARY KEY,
     username  VARCHAR(45),
     authority VARCHAR(45)
