@@ -13,8 +13,7 @@ import java.util.List;
 public interface DtoMapper {
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
-//    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/users/\" + user.getAvatar().getId() + \"/avatar\" : null)")
-    @Mapping(target = "image", expression = "java(\"\")")
+    @Mapping(target = "image", expression = "java(user.getAvatar() != null ? \"/users/\" + user.getAvatar().getId() + \"/avatar\" : null)")
     UserRecord toUserDto(User user);
 
     @Mapping(target = "regDate", source = "regDate", dateFormat = "dd.MM.yyyy HH:mm:ss")
@@ -38,12 +37,11 @@ public interface DtoMapper {
     FullAds toFullAds(Ads ads);
 
     @Mapping(target = "author", expression = "java(comment.getUser() != null ? (int) comment.getUser().getId() : null)")
-    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd.MM.yyyy HH:mm:ss")
+    @Mapping(target = "authorImage", expression = "java(comment.getUser().getAvatar() != null ? \"/users/\" + comment.getUser().getAvatar().getId() + \"/avatar\" : null)")
+    @Mapping(target = "authorFirstName", expression = "java(comment.getUser() != null ? comment.getUser().getFirstName() : null)")
+    @Mapping(target = "createdAt", expression = "java(comment.getCreatedAt() != null ? comment.getCreatedAt().toInstant(java.time.ZoneOffset.of(\"+03:00:00\")).toEpochMilli() : null)")
     @Mapping(target = "pk", source = "id")
     CommentRecord toCommentDto(Comment comment);
-
-    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd.MM.yyyy HH:mm:ss")
-    Comment toCommentEntity(CommentRecord commentRecord);
 
     default ResponseWrapperAds toResponseWrapperAds(List<Ads> results){
         return toResponseWrapperAds(results.size(), results);
