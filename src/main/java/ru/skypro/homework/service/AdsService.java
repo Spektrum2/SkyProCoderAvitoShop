@@ -8,10 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.*;
-import ru.skypro.homework.model.Ads;
-import ru.skypro.homework.model.Authorities;
-import ru.skypro.homework.model.Comment;
-import ru.skypro.homework.model.User;
+import ru.skypro.homework.model.*;
 import ru.skypro.homework.repository.*;
 
 import java.io.IOException;
@@ -111,10 +108,12 @@ public class AdsService {
                     logger.error("There is not ads with id = {}", id);
                     return new AdsNotFoundException(id);
                 });
+        Image image = ads.getImage();
         if (ads.getUser().getUserName().equals(authentication.getName())
                 || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
             commentRepository.deleteAll(ads.getComments());
             adsRepository.deleteById(id);
+            imageRepository.delete(image);
         } else {
             logger.error("Access denied to remove the product");
             throw new UnauthorizedException();
