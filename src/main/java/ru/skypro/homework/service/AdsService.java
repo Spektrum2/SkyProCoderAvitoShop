@@ -76,6 +76,7 @@ public class AdsService {
     public CommentRecord addComments(Long id, CommentRecord commentRecord, Authentication authentication) {
         logger.info("Was invoked method addComments");
         LocalDateTime localDateTime = LocalDateTime.now();
+        Comment comment = new Comment();
         User user = userRepository.findByUserName(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
@@ -86,7 +87,7 @@ public class AdsService {
                     logger.error("There is not ads with id = {}", id);
                     return new AdsNotFoundException(id);
                 });
-        Comment comment = dtoMapper.toCommentEntity(commentRecord);
+        comment.setText(commentRecord.getText());
         comment.setUser(user);
         comment.setAds(ads);
         comment.setCreatedAt(localDateTime);
