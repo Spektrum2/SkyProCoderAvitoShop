@@ -54,4 +54,16 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Пользователь с username " + e.getUsername() + " не найден");
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AuthoritiesNotFoundException.class)
+    public ResponseEntity<String> handleAuthoritiesNameNotFoundException(AuthoritiesNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Роль с username " + e.getUsername() + " не найдена");
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handlesUnauthorizedException(UnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Нет доступа");
+    }
 }

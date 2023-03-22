@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -64,8 +65,9 @@ public class AdsController {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public AdsRecord addAds(@RequestPart("properties") CreateAds createAds,
-                            @RequestPart("image") MultipartFile multipartFile) throws IOException {
-        return adsService.addAds(createAds, multipartFile);
+                            @RequestPart("image") MultipartFile multipartFile,
+                            Authentication authentication) throws IOException {
+        return adsService.addAds(createAds, multipartFile, authentication);
     }
 
     @Operation(
@@ -103,8 +105,9 @@ public class AdsController {
     )
     @PostMapping("/{id}/comments")
     public CommentRecord addComments(@PathVariable Long id,
-                                     @RequestBody CommentRecord commentRecord) {
-        return adsService.addComments(id, commentRecord);
+                                     @RequestBody CommentRecord commentRecord,
+                                     Authentication authentication) {
+        return adsService.addComments(id, commentRecord, authentication);
     }
 
     @Operation(
@@ -137,8 +140,8 @@ public class AdsController {
             tags = "Объявления"
     )
     @DeleteMapping("/{id}")
-    public void removeAds(@PathVariable Long id) {
-        adsService.removeAds(id);
+    public void removeAds(@PathVariable Long id, Authentication authentication) {
+        adsService.removeAds(id, authentication);
     }
 
     @Operation(
@@ -157,8 +160,9 @@ public class AdsController {
     )
     @PatchMapping("/{id}")
     public AdsRecord updateAds(@PathVariable Long id,
-                               @RequestBody CreateAds createAds) {
-        return adsService.updateAds(id, createAds);
+                               @RequestBody CreateAds createAds,
+                               Authentication authentication) {
+        return adsService.updateAds(id, createAds, authentication);
     }
 
     @Operation(
@@ -193,8 +197,9 @@ public class AdsController {
     )
     @DeleteMapping("/{adId}/comments/{commentId}")
     public void deleteComments(@PathVariable Long adId,
-                               @PathVariable Long commentId) throws RuntimeException {
-        adsService.deleteComments(adId, commentId);
+                               @PathVariable Long commentId,
+                               Authentication authentication) throws RuntimeException {
+        adsService.deleteComments(adId, commentId, authentication);
     }
 
     @Operation(
@@ -214,8 +219,9 @@ public class AdsController {
     @PatchMapping("/{adId}/comments/{commentId}")
     public CommentRecord updateComments(@PathVariable Long adId,
                                         @PathVariable Long commentId,
-                                        @RequestBody CommentRecord commentRecord) {
-        return adsService.updateComments(adId, commentId, commentRecord);
+                                        @RequestBody CommentRecord commentRecord,
+                                        Authentication authentication) {
+        return adsService.updateComments(adId, commentId, commentRecord, authentication);
     }
 
     @Operation(
@@ -253,8 +259,9 @@ public class AdsController {
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}/image")
     public void updateAdsImage(@PathVariable Long id,
-                               @RequestPart("image") MultipartFile multipartFile) throws IOException {
-        adsService.updateAdsImage(id, multipartFile);
+                               @RequestPart("image") MultipartFile multipartFile,
+                               Authentication authentication) throws IOException {
+        adsService.updateAdsImage(id, multipartFile, authentication);
     }
 
     @Operation(

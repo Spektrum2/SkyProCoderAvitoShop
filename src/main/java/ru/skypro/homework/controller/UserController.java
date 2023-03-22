@@ -45,8 +45,8 @@ public class UserController {
             tags = "Пользователи"
     )
     @PostMapping("/set_password")
-    public NewPassword setPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
-        return userService.setPassword(newPassword, authentication);
+    public NewPassword setPassword(@RequestBody NewPassword newPassword) {
+        return userService.setPassword(newPassword);
     }
 
     @Operation(
@@ -83,8 +83,8 @@ public class UserController {
             tags = "Пользователи"
     )
     @PatchMapping("/me")
-    public UserRecord updateUser(@RequestBody UserRecord userRecord) {
-        return userService.updateUser(userRecord);
+    public UserRecord updateUser(@RequestBody UserRecord userRecord, Authentication authentication) {
+        return userService.updateUser(userRecord, authentication);
     }
 
     @Operation(
@@ -98,8 +98,8 @@ public class UserController {
             tags = "Пользователи"
     )
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/me/image")
-    public void updateUserImage(@RequestPart("image") MultipartFile multipartFile) throws IOException {
-        userService.updateUserImage(multipartFile);
+    public void updateUserImage(@RequestPart("image") MultipartFile multipartFile, Authentication authentication) throws IOException {
+        userService.updateUserImage(multipartFile, authentication);
     }
 
     @Operation(

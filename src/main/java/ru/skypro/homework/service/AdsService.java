@@ -2,20 +2,17 @@ package ru.skypro.homework.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.component.DtoMapper;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.exception.AdsNotFoundException;
-import ru.skypro.homework.exception.CommentForbiddenException;
-import ru.skypro.homework.exception.CommentNotFoundException;
+import ru.skypro.homework.exception.*;
 import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.model.Authorities;
 import ru.skypro.homework.model.Comment;
-import ru.skypro.homework.repository.AdsRepository;
-import ru.skypro.homework.repository.CommentRepository;
-import ru.skypro.homework.repository.ImageRepository;
-import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.model.User;
+import ru.skypro.homework.repository.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
