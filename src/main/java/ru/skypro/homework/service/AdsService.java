@@ -212,6 +212,10 @@ public class AdsService {
     public ResponseWrapperAds getAdsMe(Authentication authentication) {
         logger.info("Was invoked method getAdsMe");
         User user = userRepository.findByUserName(authentication.getName());
+        if (user == null) {
+            logger.error("There is not user with username = {}", authentication.getName());
+            throw new UserNameNotFoundException(authentication.getName());
+        }
         return dtoMapper.toResponseWrapperAds(user.getAds());
     }
 
