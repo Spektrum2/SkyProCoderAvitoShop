@@ -53,7 +53,7 @@ CREATE TABLE authorities
 
 -- changeset aleksandr:5
 -- preconditions onFail:MARK_RAN onError:MARK_RAN
--- precondition-sql-check expectedResult:0 SELECT count(*) FROM users WHERE username = 'anon@gmail.com'
+-- precondition-sql-check expectedResult:0 SELECT count(*) FROM users WHERE username = 'user@gmail.com'
 INSERT INTO users (username, password, enabled)
 VALUES ('user@gmail.com', '{bcrypt}$2a$10$jd38QM.HRVwbHDFQkzuoQeNDb9lDBCLZFPMkEpE7s6mGbptKmfKhC', TRUE);
 
