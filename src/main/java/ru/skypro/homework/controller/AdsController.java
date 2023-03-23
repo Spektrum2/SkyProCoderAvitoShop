@@ -31,11 +31,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getWrapperAds",
+            summary = "Получить все объявления",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getWrapperAds",
+                            description = "Получить все объявления",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ResponseWrapperAds.class)
@@ -50,11 +50,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "addAds",
+            summary = "Добавить объявление",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "addAds",
+                            description = "Добавить объявление",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = AdsRecord.class)
@@ -71,18 +71,18 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getComments",
+            summary = "Получить комментарии объявления",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getComments",
+                            description = "Получить комментарии объявления",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ResponseWrapperComment.class)
                             )
                     )
             },
-            tags = "Объявления"
+            tags = "Комментарии"
     )
     @GetMapping("/{id}/comments")
     public ResponseWrapperComment getComments(@PathVariable Long id) {
@@ -90,18 +90,18 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "addComments",
+            summary = "Добавить комментарий к объявлению",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "addComments",
+                            description = "Добавить комментарий к объявлению",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
                             )
                     )
             },
-            tags = "Объявления"
+            tags = "Комментарии"
     )
     @PostMapping("/{id}/comments")
     public CommentRecord addComments(@PathVariable Long id,
@@ -111,11 +111,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getFullAd",
+            summary = "Получить информацию об объявлении",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getFullAd",
+                            description = "Получить информацию об объявлении",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = FullAds.class)
@@ -130,11 +130,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "removeAds",
+            summary = "Удалить объявление",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "removeAds"
+                            description = "Удалить объявление"
                     )
             },
             tags = "Объявления"
@@ -145,11 +145,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "updateAds",
+            summary = "Обновить информацию об объявлении",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "updateAds",
+                            description = "Обновить информацию об объявлении",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = AdsRecord.class)
@@ -166,18 +166,18 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getComment",
+            summary = "Получить комментарий объявления",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getComment",
+                            description = "Получить комментарий объявления",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
                             )
                     )
             },
-            tags = "Объявления"
+            tags = "Комментарии"
     )
     @GetMapping("/{adId}/comments/{commentId}")
     public CommentRecord getComment(@PathVariable Long adId,
@@ -186,14 +186,14 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "deleteComments",
+            summary = "Удалить комментарий",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "deleteComments"
+                            description = "Удалить комментарий"
                     )
             },
-            tags = "Объявления"
+            tags = "Комментарии"
     )
     @DeleteMapping("/{adId}/comments/{commentId}")
     public void deleteComments(@PathVariable Long adId,
@@ -203,18 +203,18 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "updateComments",
+            summary = "Обновить комментарий",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "updateComments",
+                            description = "Обновить комментарий",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
                             )
                     )
             },
-            tags = "Объявления"
+            tags = "Комментарии"
     )
     @PatchMapping("/{adId}/comments/{commentId}")
     public CommentRecord updateComments(@PathVariable Long adId,
@@ -225,11 +225,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getAdsMe",
+            summary = "Получить объявления авторизованного пользователя",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getAdsMe",
+                            description = "Получить объявления авторизованного пользователя",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
@@ -244,11 +244,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "updateAdsImage",
+            summary = "Обновить картинку объявления",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "updateAdsImage",
+                            description = "Обновить картинку объявления",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = CommentRecord.class)
@@ -265,11 +265,11 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "readImage",
+            summary = "Просмотр картинки",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "readImage"
+                            description = "Просмотр картинки"
                     )
             },
             tags = "Объявления"

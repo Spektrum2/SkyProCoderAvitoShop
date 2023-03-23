@@ -31,11 +31,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "setPassword",
+            summary = "Обновление пароля",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "setPassword",
+                            description = "Обновление пароля",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = NewPassword.class)
@@ -50,11 +50,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "getUser",
+            summary = "Получить информацию об авторизованном пользователе",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "getUser",
+                            description = "Получить информацию об авторизованном пользователе",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = UserRecord.class)
@@ -69,11 +69,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "updateUser",
+            summary = "Обновить информацию об авторизованном пользователе",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "updateUser",
+                            description = "Обновить информацию об авторизованном пользователе",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = UserRecord.class)
@@ -88,11 +88,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "updateUserImage",
+            summary = "Обновить аватар авторизованного пользователя",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "updateUserImage"
+                            description = "Обновить аватар авторизованного пользователя"
                     )
             },
             tags = "Пользователи"
@@ -103,11 +103,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "readAvatar",
+            summary = "Просмотр аватара",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "readAvatar"
+                            description = "Просмотр аватара"
                     )
             },
             tags = "Пользователи"

@@ -31,11 +31,11 @@ public class AuthController {
     private final AuthService authService;
 
     @Operation(
-            summary = "login",
+            summary = "Авторизация пользователя",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "login"
+                            description = "Авторизация пользователя"
                     )
             },
             tags = "Авторизация"
@@ -50,14 +50,14 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "register",
+            summary = "Регистрация пользователя",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "register"
+                            description = "Регистрация пользователя"
                     )
             },
-            tags = "Авторизация"
+            tags = "Регистрация"
     )
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
