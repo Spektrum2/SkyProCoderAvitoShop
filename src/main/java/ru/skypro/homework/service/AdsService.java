@@ -214,9 +214,10 @@ public class AdsService {
         }
     }
 
-    public ResponseWrapperAds getAdsMe() {
+    public ResponseWrapperAds getAdsMe(Authentication authentication) {
         logger.info("Was invoked method getAdsMe");
-        return dtoMapper.toResponseWrapperAds(adsRepository.findAll());
+        User user = userRepository.findByUserName(authentication.getName());
+        return dtoMapper.toResponseWrapperAds(user.getAds());
     }
 
     private Authorities getAuthorities(Authentication authentication) {

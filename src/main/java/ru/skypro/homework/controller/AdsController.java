@@ -239,8 +239,8 @@ public class AdsController {
             tags = "Объявления"
     )
     @GetMapping(path = "/me")
-    public ResponseWrapperAds getAdsMe() {
-        return adsService.getAdsMe();
+    public ResponseWrapperAds getAdsMe(Authentication authentication) {
+        return adsService.getAdsMe(authentication);
     }
 
     @Operation(
@@ -283,6 +283,4 @@ public class AdsController {
                 .contentLength(pair.getSecond().length)
                 .body(pair.getSecond());
     }
-
-
 }
