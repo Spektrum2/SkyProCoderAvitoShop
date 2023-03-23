@@ -109,8 +109,7 @@ public class AdsService {
                     return new AdsNotFoundException(id);
                 });
         Image image = ads.getImage();
-        if (ads.getUser().getUserName().equals(authentication.getName())
-                || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
+        if (rightsVerification(ads.getUser(), authentication)) {
             commentRepository.deleteAll(ads.getComments());
             adsRepository.deleteById(id);
             imageRepository.delete(image);
@@ -127,14 +126,13 @@ public class AdsService {
                     logger.error("There is not ads with id = {}", id);
                     return new AdsNotFoundException(id);
                 });
-        if (ads.getUser().getUserName().equals(authentication.getName())
-                || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
+        if (rightsVerification(ads.getUser(), authentication)) {
             ads.setDescription(createAds.getDescription());
             ads.setPrice(BigDecimal.valueOf(createAds.getPrice()));
             ads.setTitle(createAds.getTitle());
             return dtoMapper.toAdsDto(adsRepository.save(ads));
         } else {
-            logger.error("Access denied to remove the product");
+            logger.error("Access denied to update the product");
             throw new UnauthorizedException();
         }
     }
@@ -161,8 +159,7 @@ public class AdsService {
                     logger.error("There is not ads with id = {}", commentId);
                     return new CommentNotFoundException(commentId);
                 });
-        if (comment.getUser().getUserName().equals(authentication.getName())
-                || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
+        if (rightsVerification(comment.getUser(), authentication)) {
             if (comment.getAds().getId() == id) {
                 commentRepository.delete(comment);
             } else {
@@ -170,7 +167,7 @@ public class AdsService {
                 throw new CommentForbiddenException(commentId);
             }
         } else {
-            logger.error("Access denied to remove the product");
+            logger.error("Access denied to remove the comment");
             throw new UnauthorizedException();
         }
     }
@@ -181,8 +178,7 @@ public class AdsService {
             logger.error("There is not comment with id = {}", commentId);
             return new CommentNotFoundException(commentId);
         });
-        if (comment.getUser().getUserName().equals(authentication.getName())
-                || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
+        if (rightsVerification(comment.getUser(), authentication)) {
             if (comment.getAds().getId() == id) {
                 comment.setText(commentRecord.getText());
                 return dtoMapper.toCommentDto(commentRepository.save(comment));
@@ -191,7 +187,7 @@ public class AdsService {
                 throw new CommentForbiddenException(commentId);
             }
         } else {
-            logger.error("Access denied to remove the product");
+            logger.error("Access denied to update the comment");
             throw new UnauthorizedException();
         }
     }
@@ -202,14 +198,13 @@ public class AdsService {
             logger.error("There is not ads with id = {}", id);
             return new AdsNotFoundException(id);
         });
-        if (ads.getUser().getUserName().equals(authentication.getName())
-                || getAuthorities(authentication).getAuthority().equals("ROLE_ADMIN")) {
+        if (rightsVerification(ads.getUser(), authentication)) {
             Long oldImage = ads.getImage().getId();
             ads.setImage(imageService.uploadImage(multipartFile));
             adsRepository.save(ads);
             imageRepository.deleteById(oldImage);
         } else {
-            logger.error("Access denied to remove the product");
+            logger.error("Access denied to update product image ");
             throw new UnauthorizedException();
         }
     }
@@ -220,10 +215,11 @@ public class AdsService {
         return dtoMapper.toResponseWrapperAds(user.getAds());
     }
 
-    private Authorities getAuthorities(Authentication authentication) {
+    private boolean rightsVerification(User user, Authentication authentication) {
         Authorities authorities = authoritiesRepository.findByUsername(authentication.getName());
         if (authorities != null) {
-            return authorities;
+            return user.getUserName().equals(authentication.getName())
+                    || authorities.getAuthority().equals("ROLE_ADMIN");
         } else {
             logger.error("There is not role with username = {}", authentication.getName());
             throw new AuthoritiesNotFoundException(authentication.getName());
