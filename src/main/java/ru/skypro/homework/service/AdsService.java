@@ -11,8 +11,12 @@ import ru.skypro.homework.exception.*;
 import ru.skypro.homework.model.*;
 import ru.skypro.homework.repository.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 @Service
@@ -101,18 +105,25 @@ public class AdsService {
         return dtoMapper.toFullAds(ads);
     }
 
-    public void removeAds(Long id, Authentication authentication) {
+    public void removeAds(Long id, Authentication authentication) throws IOException {
         logger.info("Was invoked method removeAds");
         Ads ads = adsRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("There is not ads with id = {}", id);
                     return new AdsNotFoundException(id);
                 });
-        Image image = ads.getImage();
+        Image oldImage = ads.getImage();
         if (rightsVerification(ads.getUser(), authentication)) {
             commentRepository.deleteAll(ads.getComments());
             adsRepository.deleteById(id);
-            imageRepository.delete(image);
+            if (oldImage != null) {
+                Path fileToDeletePath = Paths.get(oldImage.getFilePath());
+                imageRepository.delete(oldImage);
+                Files.delete(fileToDeletePath);
+            } else {
+                logger.error("There is not image");
+                throw  new ImageNotFoundFromAdsException();
+            }
         } else {
             logger.error("Access denied to remove the product");
             throw new UnauthorizedException();
@@ -198,11 +209,18 @@ public class AdsService {
             logger.error("There is not ads with id = {}", id);
             return new AdsNotFoundException(id);
         });
+        Image oldImage = ads.getImage();
         if (rightsVerification(ads.getUser(), authentication)) {
-            Long oldImage = ads.getImage().getId();
             ads.setImage(imageService.uploadImage(multipartFile));
             adsRepository.save(ads);
-            imageRepository.deleteById(oldImage);
+            if (oldImage != null) {
+                Path fileToDeletePath = Paths.get(oldImage.getFilePath());
+                imageRepository.delete(oldImage);
+                Files.delete(fileToDeletePath);
+            } else {
+                logger.error("There is not image");
+                throw  new ImageNotFoundFromAdsException();
+            }
         } else {
             logger.error("Access denied to update product image ");
             throw new UnauthorizedException();

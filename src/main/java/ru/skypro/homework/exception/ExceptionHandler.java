@@ -66,4 +66,10 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Нет доступа");
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ImageNotFoundFromAdsException.class)
+    public ResponseEntity<String> handlesImageNotFoundFromAdsExceptionException(ImageNotFoundFromAdsException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Коментарий не найден");
+    }
 }

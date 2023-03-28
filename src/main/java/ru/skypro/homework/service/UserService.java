@@ -18,6 +18,9 @@ import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class UserService {
@@ -83,7 +86,9 @@ public class UserService {
         user.setAvatar(avatarService.uploadAvatar(multipartFile));
         userRepository.save(user);
         if (oldAvatar != null) {
+            Path fileToDeletePath = Paths.get(oldAvatar.getFilePath());
             avatarRepository.delete(oldAvatar);
+            Files.delete(fileToDeletePath);
         }
     }
 }

@@ -140,7 +140,7 @@ public class AdsController {
             tags = "Объявления"
     )
     @DeleteMapping("/{id}")
-    public void removeAds(@PathVariable Long id, Authentication authentication) {
+    public void removeAds(@PathVariable Long id, Authentication authentication) throws IOException {
         adsService.removeAds(id, authentication);
     }
 
