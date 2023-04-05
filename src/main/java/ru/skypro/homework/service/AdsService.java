@@ -116,14 +116,13 @@ public class AdsService {
         if (rightsVerification(ads.getUser(), authentication)) {
             commentRepository.deleteAll(ads.getComments());
             adsRepository.deleteById(id);
-            if (oldImage != null) {
-                Path fileToDeletePath = Paths.get(oldImage.getFilePath());
-                imageRepository.delete(oldImage);
-                Files.delete(fileToDeletePath);
-            } else {
+            if (oldImage == null) {
                 logger.error("There is not image");
                 throw  new ImageNotFoundFromAdsException();
             }
+            Path fileToDeletePath = Paths.get(oldImage.getFilePath());
+            imageRepository.delete(oldImage);
+            Files.delete(fileToDeletePath);
         } else {
             logger.error("Access denied to remove the product");
             throw new UnauthorizedException();
@@ -213,14 +212,13 @@ public class AdsService {
         if (rightsVerification(ads.getUser(), authentication)) {
             ads.setImage(imageService.uploadImage(multipartFile));
             adsRepository.save(ads);
-            if (oldImage != null) {
-                Path fileToDeletePath = Paths.get(oldImage.getFilePath());
-                imageRepository.delete(oldImage);
-                Files.delete(fileToDeletePath);
-            } else {
+            if (oldImage == null) {
                 logger.error("There is not image");
                 throw  new ImageNotFoundFromAdsException();
             }
+            Path fileToDeletePath = Paths.get(oldImage.getFilePath());
+            imageRepository.delete(oldImage);
+            Files.delete(fileToDeletePath);
         } else {
             logger.error("Access denied to update product image ");
             throw new UnauthorizedException();
@@ -239,12 +237,11 @@ public class AdsService {
 
     private boolean rightsVerification(User user, Authentication authentication) {
         Authorities authorities = authoritiesRepository.findByUsername(authentication.getName());
-        if (authorities != null) {
-            return user.getUserName().equals(authentication.getName())
-                    || authorities.getAuthority().equals("ROLE_ADMIN");
-        } else {
+        if (authorities == null) {
             logger.error("There is not role with username = {}", authentication.getName());
             throw new AuthoritiesNotFoundException(authentication.getName());
         }
+        return user.getUserName().equals(authentication.getName())
+                || authorities.getAuthority().equals("ROLE_ADMIN");
     }
 }

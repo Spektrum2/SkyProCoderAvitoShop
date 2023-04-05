@@ -56,16 +56,16 @@ public class AuthServiceImpl implements AuthService {
                         .build()
         );
         ru.skypro.homework.model.User user = userRepository.findByUserName(registerReq.getUsername());
-        if (user != null) {
-            user.setFirstName(registerReq.getFirstName());
-            user.setLastName(registerReq.getLastName());
-            user.setPhone(registerReq.getPhone());
-            user.setRegDate(LocalDateTime.now());
-            user.setEmail(registerReq.getUsername());
-            userRepository.save(user);
-            return true;
-        } else {
+        if (user == null) {
+            logger.error("There is not user with name = {}", registerReq.getUsername());
             throw new UserNameNotFoundException(registerReq.getUsername());
         }
+        user.setFirstName(registerReq.getFirstName());
+        user.setLastName(registerReq.getLastName());
+        user.setPhone(registerReq.getPhone());
+        user.setRegDate(LocalDateTime.now());
+        user.setEmail(registerReq.getUsername());
+        userRepository.save(user);
+        return true;
     }
 }
