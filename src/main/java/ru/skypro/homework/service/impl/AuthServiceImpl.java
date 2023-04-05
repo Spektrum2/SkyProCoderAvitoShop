@@ -10,6 +10,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.exception.UserNameNotFoundException;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
@@ -55,12 +56,16 @@ public class AuthServiceImpl implements AuthService {
                         .build()
         );
         ru.skypro.homework.model.User user = userRepository.findByUserName(registerReq.getUsername());
-        user.setFirstName(registerReq.getFirstName());
-        user.setLastName(registerReq.getLastName());
-        user.setPhone(registerReq.getPhone());
-        user.setRegDate(LocalDateTime.now());
-        user.setEmail(registerReq.getUsername());
-        userRepository.save(user);
-        return true;
+        if (user != null) {
+            user.setFirstName(registerReq.getFirstName());
+            user.setLastName(registerReq.getLastName());
+            user.setPhone(registerReq.getPhone());
+            user.setRegDate(LocalDateTime.now());
+            user.setEmail(registerReq.getUsername());
+            userRepository.save(user);
+            return true;
+        } else {
+            throw new UserNameNotFoundException(registerReq.getUsername());
+        }
     }
 }
