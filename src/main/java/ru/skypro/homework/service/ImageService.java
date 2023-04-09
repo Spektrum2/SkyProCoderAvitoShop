@@ -29,6 +29,13 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
+    /**
+     * Метод для загрузки картинки
+     *
+     * @param multipartFile картинка
+     * @return возвращает картинку
+     * @throws IOException
+     */
     public Image uploadImage(MultipartFile multipartFile) throws IOException {
         logger.info("Was invoked method for upload image");
         byte[] data = multipartFile.getBytes();
@@ -46,6 +53,14 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
+    /**
+     * Метод для создания картинки
+     *
+     * @param size размер картинки
+     * @param contentType тип картинки
+     * @param data информация о картинке
+     * @return возвращает картинку
+     */
     private Image creat(long size, String contentType, byte[] data) {
         Image image = new Image();
         image.setFileSize(size);
@@ -54,6 +69,12 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
+    /**
+     * Метод для просмотра картинки из БД
+     *
+     * @param id id картинки
+     * @return возвращает картинку
+     */
     public Pair<String, byte[]> readImage(long id) {
         logger.info("Was invoked method for read image");
         Image image = imageRepository.findById(id)

@@ -45,6 +45,12 @@ public class UserService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Метод для обновления пароля
+     *
+     * @param newPassword тело с текущим паролем и новым паролем
+     * @return возвращает тело с текущим паролем и новым паролем
+     */
     public NewPassword setPassword(NewPassword newPassword) {
         logger.info("Was invoked method setPassword");
         String encryptedPassword = "{bcrypt}" + encoder.encode(newPassword.getNewPassword());
@@ -52,6 +58,12 @@ public class UserService {
         return newPassword;
     }
 
+    /**
+     * Метод для получения информации об авторизованном пользователе
+     *
+     * @param authentication авторизованный пользователь
+     * @return возвращает пользователя
+     */
     public UserRecord getUser(Authentication authentication) {
         logger.info("Was invoked method getUser");
         User user = userRepository.findByUserName(authentication.getName());
@@ -62,6 +74,13 @@ public class UserService {
         return dtoMapper.toUserDto(user);
     }
 
+    /**
+     *  Метод обновления информации об авторизованном пользователе
+     *
+     * @param userRecord пользователь
+     * @param authentication авторизованный пользователь
+     * @return возвращает пользователя
+     */
     public UserRecord updateUser(UserRecord userRecord, Authentication authentication) {
         logger.info("Was invoked method getUser");
         User user = userRepository.findByUserName(authentication.getName());
@@ -75,6 +94,13 @@ public class UserService {
         return dtoMapper.toUserDto(userRepository.save(user));
     }
 
+    /**
+     * Метод для обновления аватара авторизованного пользователя
+     *
+     * @param multipartFile аватар
+     * @param authentication авторизованный пользователь
+     * @throws IOException
+     */
     public void updateUserImage(MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method updateUserImage");
         User user = userRepository.findByUserName(authentication.getName());

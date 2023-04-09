@@ -28,6 +28,13 @@ public class AvatarService {
         this.avatarRepository = avatarRepository;
     }
 
+    /**
+     * Метод для загрузки аватара
+     *
+     * @param multipartFile аватар
+     * @return возвращает аватар
+     * @throws IOException
+     */
     public Avatar uploadAvatar(MultipartFile multipartFile) throws IOException {
         logger.info("Was invoked method for upload avatar");
         byte[] data = multipartFile.getBytes();
@@ -45,6 +52,14 @@ public class AvatarService {
         return avatarRepository.save(avatar);
     }
 
+    /**
+     * Метод для создания аватара
+     *
+     * @param size размер аватара
+     * @param contentType тип аватара
+     * @param data информация о аватаре
+     * @return возвращает аватар
+     */
     private Avatar creat(long size, String contentType, byte[] data) {
         logger.info("Was invoked method for create avatar");
         Avatar avatar = new Avatar();
@@ -54,6 +69,12 @@ public class AvatarService {
         return avatarRepository.save(avatar);
     }
 
+    /**
+     * Метод для просмотра аватара из БД
+     *
+     * @param id id фотографии
+     * @return возвращает pair
+     */
     public Pair<String, byte[]> readAvatar(long id) {
         logger.info("Was invoked method for read avatar");
         Avatar avatar = avatarRepository.findById(id)

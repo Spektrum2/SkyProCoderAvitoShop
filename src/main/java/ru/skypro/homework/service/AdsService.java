@@ -46,11 +46,25 @@ public class AdsService {
         this.authoritiesRepository = authoritiesRepository;
     }
 
+    /**
+     * Метод выводит все объявления
+     *
+     * @return возвращает объявления
+     */
     public ResponseWrapperAds getWrapperAds() {
         logger.info("Was invoked method getWrapperAds");
         return dtoMapper.toResponseWrapperAds(adsRepository.findAll());
     }
 
+    /**
+     * Метод для добавления объявление
+     *
+     * @param createAds тело объявления
+     * @param multipartFile картинка
+     * @param authentication авторизованный пользователь
+     * @return возвращает объявление
+     * @throws IOException
+     */
     public AdsRecord addAds(CreateAds createAds, MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method addAds");
         User user = userRepository.findByUserName(authentication.getName());
@@ -64,6 +78,12 @@ public class AdsService {
         return dtoMapper.toAdsDto(adsRepository.save(ads));
     }
 
+    /**
+     * Метод для получения комментариев объявления
+     *
+     * @param id id объявления
+     * @return возвращает список объявлений
+     */
     public ResponseWrapperComment getComments(Long id) {
         logger.info("Was invoked method getComments");
         Ads ads = adsRepository.findById(id)
@@ -74,6 +94,14 @@ public class AdsService {
         return dtoMapper.toResponseWrapperComment(ads.getComments());
     }
 
+    /**
+     * Метод для добавления комментария к объявлению
+     *
+     * @param id id объявления
+     * @param commentRecord тело комментария
+     * @param authentication авторизованный пользователь
+     * @return
+     */
     public CommentRecord addComments(Long id, CommentRecord commentRecord, Authentication authentication) {
         logger.info("Was invoked method addComments");
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -95,6 +123,12 @@ public class AdsService {
         return dtoMapper.toCommentDto(commentRepository.save(comment));
     }
 
+    /**
+     * Метод для получения информации об объявлении
+     *
+     * @param id id объявления
+     * @return возвращает информацию об объявление и о пользователе, который создал его
+     */
     public FullAds getFullAd(Long id) {
         logger.info("Was invoked method getFullAd");
         Ads ads = adsRepository.findById(id)
@@ -105,6 +139,13 @@ public class AdsService {
         return dtoMapper.toFullAds(ads);
     }
 
+    /**
+     * Метод для удаления объявления
+     *
+     * @param id id объявления
+     * @param authentication авторизованный пользователь
+     * @throws IOException
+     */
     public void removeAds(Long id, Authentication authentication) throws IOException {
         logger.info("Was invoked method removeAds");
         Ads ads = adsRepository.findById(id)
@@ -118,7 +159,7 @@ public class AdsService {
             adsRepository.deleteById(id);
             if (oldImage == null) {
                 logger.error("There is not image");
-                throw  new ImageNotFoundFromAdsException();
+                throw new ImageNotFoundFromAdsException();
             }
             Path fileToDeletePath = Paths.get(oldImage.getFilePath());
             imageRepository.delete(oldImage);
@@ -129,6 +170,14 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для обновления информации об объявлении
+     *
+     * @param id id объявления
+     * @param createAds тело объявления
+     * @param authentication авторизованный пользователь
+     * @return возвращает объявление
+     */
     public AdsRecord updateAds(Long id, CreateAds createAds, Authentication authentication) {
         logger.info("Was invoked method updateAds");
         Ads ads = adsRepository.findById(id)
@@ -147,6 +196,13 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для получения комментария объявления
+     *
+     * @param id id объявления
+     * @param commentId id коментария
+     * @return возвращает коменарий
+     */
     public CommentRecord getComment(Long id, Long commentId) {
         logger.info("Was invoked method getComment");
         Comment comment = commentRepository.findById(commentId)
@@ -162,6 +218,13 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для удаления комментария
+     *
+     * @param id id объявления
+     * @param commentId id коментария
+     * @param authentication авторизованный пользователь
+     */
     public void deleteComments(Long id, Long commentId, Authentication authentication) {
         logger.info("Was invoked method deleteComments");
         Comment comment = commentRepository.findById(commentId)
@@ -182,6 +245,15 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для  обновления комментария
+     *
+     * @param id id объявления
+     * @param commentId id коментария
+     * @param commentRecord тело комментария
+     * @param authentication авторизованный пользователь
+     * @return возвращает комментарий
+     */
     public CommentRecord updateComments(Long id, Long commentId, CommentRecord commentRecord, Authentication authentication) {
         logger.info("Was invoked method updateComments");
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
@@ -202,6 +274,14 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для обновления картинки объявления
+     *
+     * @param id id объявления
+     * @param multipartFile картинка
+     * @param authentication авторизованный пользователь
+     * @throws IOException
+     */
     public void updateAdsImage(Long id, MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method updateAdsImage");
         Ads ads = adsRepository.findById(id).orElseThrow(() -> {
@@ -214,7 +294,7 @@ public class AdsService {
             adsRepository.save(ads);
             if (oldImage == null) {
                 logger.error("There is not image");
-                throw  new ImageNotFoundFromAdsException();
+                throw new ImageNotFoundFromAdsException();
             }
             Path fileToDeletePath = Paths.get(oldImage.getFilePath());
             imageRepository.delete(oldImage);
@@ -225,6 +305,12 @@ public class AdsService {
         }
     }
 
+    /**
+     * Метод для получения объявления авторизованного пользователя
+     *
+     * @param authentication авторизованный пользователь
+     * @return возвращает список объявлений
+     */
     public ResponseWrapperAds getAdsMe(Authentication authentication) {
         logger.info("Was invoked method getAdsMe");
         User user = userRepository.findByUserName(authentication.getName());
@@ -235,6 +321,13 @@ public class AdsService {
         return dtoMapper.toResponseWrapperAds(user.getAds());
     }
 
+    /**
+     * Метод для распределения прав авторизованных пользователей и администратора
+     *
+     * @param user пользователь создавший объявление или комментарий
+     * @param authentication авторизованный пользователь
+     * @return возвращает true или false
+     */
     private boolean rightsVerification(User user, Authentication authentication) {
         Authorities authorities = authoritiesRepository.findByUsername(authentication.getName());
         if (authorities == null) {

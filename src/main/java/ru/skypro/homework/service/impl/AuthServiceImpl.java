@@ -30,6 +30,13 @@ public class AuthServiceImpl implements AuthService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Метод для авторизации пользователя
+     *
+     * @param userName логин пользователя
+     * @param password пароль пользователя
+     * @return возвращает true или false
+     */
     @Override
     public boolean login(String userName, String password) {
         logger.info("Was invoke method login");
@@ -42,6 +49,13 @@ public class AuthServiceImpl implements AuthService {
         return encoder.matches(password, encryptedPasswordWithoutEncryptionType);
     }
 
+    /**
+     * Метод для регистрации пользователя
+     *
+     * @param registerReq тело для ригистрации нового пользователя
+     * @param role роль пользователя
+     * @return возвращает true или false
+     */
     @Override
     public boolean register(RegisterReq registerReq, Role role) {
         logger.info("Was invoke method register");
