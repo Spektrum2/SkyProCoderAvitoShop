@@ -66,7 +66,7 @@ public class UserService {
      */
     public UserRecord getUser(Authentication authentication) {
         logger.info("Was invoked method getUser");
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
@@ -83,7 +83,7 @@ public class UserService {
      */
     public UserRecord updateUser(UserRecord userRecord, Authentication authentication) {
         logger.info("Was invoked method getUser");
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
@@ -99,11 +99,10 @@ public class UserService {
      *
      * @param multipartFile аватар
      * @param authentication авторизованный пользователь
-     * @throws IOException
      */
     public void updateUserImage(MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method updateUserImage");
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());

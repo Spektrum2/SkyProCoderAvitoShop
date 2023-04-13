@@ -11,7 +11,6 @@ import ru.skypro.homework.exception.*;
 import ru.skypro.homework.model.*;
 import ru.skypro.homework.repository.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -63,11 +62,10 @@ public class AdsService {
      * @param multipartFile картинка
      * @param authentication авторизованный пользователь
      * @return возвращает объявление
-     * @throws IOException
      */
     public AdsRecord addAds(CreateAds createAds, MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method addAds");
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
@@ -100,13 +98,13 @@ public class AdsService {
      * @param id id объявления
      * @param commentRecord тело комментария
      * @param authentication авторизованный пользователь
-     * @return
+     * @return возвращает комментарий
      */
     public CommentRecord addComments(Long id, CommentRecord commentRecord, Authentication authentication) {
         logger.info("Was invoked method addComments");
         LocalDateTime localDateTime = LocalDateTime.now();
         Comment comment = new Comment();
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
@@ -144,7 +142,6 @@ public class AdsService {
      *
      * @param id id объявления
      * @param authentication авторизованный пользователь
-     * @throws IOException
      */
     public void removeAds(Long id, Authentication authentication) throws IOException {
         logger.info("Was invoked method removeAds");
@@ -280,7 +277,6 @@ public class AdsService {
      * @param id id объявления
      * @param multipartFile картинка
      * @param authentication авторизованный пользователь
-     * @throws IOException
      */
     public void updateAdsImage(Long id, MultipartFile multipartFile, Authentication authentication) throws IOException {
         logger.info("Was invoked method updateAdsImage");
@@ -313,7 +309,7 @@ public class AdsService {
      */
     public ResponseWrapperAds getAdsMe(Authentication authentication) {
         logger.info("Was invoked method getAdsMe");
-        User user = userRepository.findByUserName(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         if (user == null) {
             logger.error("There is not user with username = {}", authentication.getName());
             throw new UserNameNotFoundException(authentication.getName());
@@ -334,7 +330,7 @@ public class AdsService {
             logger.error("There is not role with username = {}", authentication.getName());
             throw new AuthoritiesNotFoundException(authentication.getName());
         }
-        return user.getUserName().equals(authentication.getName())
+        return user.getUsername().equals(authentication.getName())
                 || authorities.getAuthority().equals("ROLE_ADMIN");
     }
 }

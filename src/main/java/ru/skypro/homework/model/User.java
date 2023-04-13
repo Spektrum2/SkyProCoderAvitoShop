@@ -1,7 +1,5 @@
 package ru.skypro.homework.model;
 
-import ru.skypro.homework.dto.Role;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +11,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "username")
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String password;
@@ -35,7 +32,7 @@ public class User {
 
     public User(long id, String userName, String firstName, String lastName, String password, String email, String phone, LocalDateTime regDate, Avatar avatar) {
         this.id = id;
-        this.userName = userName;
+        this.username = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -53,12 +50,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getFirstName() {
@@ -158,7 +155,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +

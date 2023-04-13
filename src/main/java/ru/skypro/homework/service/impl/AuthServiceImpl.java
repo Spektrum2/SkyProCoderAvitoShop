@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    private Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
@@ -33,17 +34,17 @@ public class AuthServiceImpl implements AuthService {
     /**
      * Метод для авторизации пользователя
      *
-     * @param userName логин пользователя
+     * @param username логин пользователя
      * @param password пароль пользователя
      * @return возвращает true или false
      */
     @Override
-    public boolean login(String userName, String password) {
+    public boolean login(String username, String password) {
         logger.info("Was invoke method login");
-        if (!manager.userExists(userName)) {
+        if (!manager.userExists(username)) {
             return false;
         }
-        UserDetails userDetails = manager.loadUserByUsername(userName);
+        UserDetails userDetails = manager.loadUserByUsername(username);
         String encryptedPassword = userDetails.getPassword();
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
         return encoder.matches(password, encryptedPasswordWithoutEncryptionType);
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
      * Метод для регистрации пользователя
      *
      * @param registerReq тело для ригистрации нового пользователя
-     * @param role роль пользователя
+     * @param role        роль пользователя
      * @return возвращает true или false
      */
     @Override
@@ -63,13 +64,18 @@ public class AuthServiceImpl implements AuthService {
             return false;
         }
         manager.createUser(
-                User.withDefaultPasswordEncoder()
+//                User.withDefaultPasswordEncoder()
+//                        .password(registerReq.getPassword())
+//                        .username(registerReq.getUsername())
+//                        .roles(role.name())
+//                        .build()
+                User.withUsername(registerReq.getUsername())
+                        .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
                         .password(registerReq.getPassword())
-                        .username(registerReq.getUsername())
                         .roles(role.name())
                         .build()
         );
-        ru.skypro.homework.model.User user = userRepository.findByUserName(registerReq.getUsername());
+        ru.skypro.homework.model.User user = userRepository.findByUsername(registerReq.getUsername());
         if (user == null) {
             logger.error("There is not user with name = {}", registerReq.getUsername());
             throw new UserNameNotFoundException(registerReq.getUsername());

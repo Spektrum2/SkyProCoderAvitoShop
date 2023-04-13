@@ -6,9 +6,9 @@
 CREATE TABLE image
 (
     id         BIGSERIAL PRIMARY KEY,
-    file_path  TEXT,
+    file_path  VARCHAR(255),
     file_size  BIGINT,
-    media_type TEXT,
+    media_type VARCHAR(255),
     data       BYTEA
 );
 
@@ -18,9 +18,9 @@ CREATE TABLE image
 CREATE TABLE avatar
 (
     id         BIGSERIAL PRIMARY KEY,
-    file_path  TEXT,
+    file_path  VARCHAR(255),
     file_size  BIGINT,
-    media_type TEXT,
+    media_type VARCHAR(255),
     data       BYTEA
 );
 
@@ -31,11 +31,11 @@ CREATE TABLE users
 (
     id         BIGSERIAL PRIMARY KEY,
     username   VARCHAR(45),
-    first_name TEXT,
-    last_name  TEXT,
+    first_name VARCHAR(255),
+    last_name  VARCHAR(255),
     password   VARCHAR(100),
-    email      TEXT,
-    phone      TEXT,
+    email      VARCHAR(255),
+    phone      VARCHAR(255),
     reg_date   TIMESTAMP,
     enabled    BOOLEAN,
     avatar_id  BIGINT REFERENCES avatar (id)
@@ -69,9 +69,9 @@ VALUES ('user@gmail.com', 'ROLE_ADMIN');
 CREATE TABLE ads
 (
     id          BIGSERIAL PRIMARY KEY,
-    description TEXT,
+    description VARCHAR(255),
     price       NUMERIC(7, 2),
-    title       TEXT,
+    title       VARCHAR(255),
     image_id    BIGINT REFERENCES image (id),
     author_id   BIGINT REFERENCES users (id)
 );
@@ -83,7 +83,7 @@ CREATE TABLE comment
 (
     id         BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP,
-    text       TEXT,
+    text       VARCHAR(255),
     author_id  BIGINT REFERENCES users (id),
     ads_id     BIGINT REFERENCES ads (id)
 );
