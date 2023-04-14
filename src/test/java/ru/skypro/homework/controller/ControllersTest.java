@@ -99,6 +99,7 @@ class ControllersTest {
     @Test
     public void registerNegativeTest() {
         RegisterReq registerReq = generateUser();
+        registerReq.setRole(null);
         registerReq.setUsername("user2@gmail.com");
         registerReq.setPassword("password");
 
@@ -221,6 +222,11 @@ class ControllersTest {
                         .principal(principal))
                 .andExpect(status().isOk());
 
+        mockMvc.perform(builder
+                        .file(file)
+                        .principal(principal))
+                .andExpect(status().isOk());
+
         User user = userRepository.findByUsername(principal.getName());
 
         Path path = Paths.get(user.getAvatar().getFilePath());
@@ -230,12 +236,19 @@ class ControllersTest {
     @Test
     public void readAvatarTest() throws Exception {
         Avatar avatar = generateAvatar();
+        Avatar avatar1 = new Avatar();
+        avatar1.setId(1000);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(MockMvcRequestBuilders
                         .get("http://localhost:" + port + "/users/" + avatar.getId() + "/avatar")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/users/" + avatar1.getId() + "/avatar")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -265,6 +278,12 @@ class ControllersTest {
         createAds.setPrice(1000);
         createAds.setTitle("Nail Hammer");
         createAds.setDescription("for carpentry");
+
+        Ads ads2 = generateAds(userRepository.findByUsername(principal.getName()), null);
+        Ads ads3 = generateAds(register(generateUser()), generateImage());
+        Ads ads4 = new Ads();
+        ads4.setId(1000);
+        Ads ads5 = generateAds(userRepository.findByUsername(principal.getName()), null);
 
         MockMultipartFile image
                 = new MockMultipartFile(
@@ -298,10 +317,23 @@ class ControllersTest {
 
         Ads ads = adsRepository.findByTitle(createAds.getTitle());
 
-
         createAds.setPrice(3500);
         createAds.setTitle("frying pan");
         createAds.setDescription("teflon coating");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("/ads/" + ads3.getId())
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAds)))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("/ads/" + ads4.getId())
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAds)))
+                .andExpect(status().isNotFound());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .patch("/ads/" + ads.getId())
@@ -317,6 +349,42 @@ class ControllersTest {
                     assertThat(adsRecordResponse.getTitle()).isEqualTo(createAds.getTitle());
                 });
 
+        MockMultipartHttpServletRequestBuilder builder2
+                = MockMvcRequestBuilders.multipart("http://localhost:" + port + "/ads/" + ads2.getId() + "/image");
+        builder2.with(request -> {
+            request.setMethod("PATCH");
+            return request;
+        });
+
+        mockMvc.perform(builder2
+                        .file(image)
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
+        MockMultipartHttpServletRequestBuilder builder3
+                = MockMvcRequestBuilders.multipart("http://localhost:" + port + "/ads/" + ads3.getId() + "/image");
+        builder3.with(request -> {
+            request.setMethod("PATCH");
+            return request;
+        });
+
+        mockMvc.perform(builder3
+                        .file(image)
+                        .principal(principal))
+                .andExpect(status().isUnauthorized());
+
+        MockMultipartHttpServletRequestBuilder builder4
+                = MockMvcRequestBuilders.multipart("http://localhost:" + port + "/ads/" + ads4.getId() + "/image");
+        builder4.with(request -> {
+            request.setMethod("PATCH");
+            return request;
+        });
+
+        mockMvc.perform(builder4
+                        .file(image)
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
         MockMultipartHttpServletRequestBuilder builder
                 = MockMvcRequestBuilders.multipart("http://localhost:" + port + "/ads/" + ads.getId() + "/image");
         builder.with(request -> {
@@ -330,6 +398,21 @@ class ControllersTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads5.getId())
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads3.getId())
+                        .principal(principal))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads4.getId())
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
                         .delete("/ads/" + ads.getId())
                         .principal(principal))
                 .andExpect(status().isOk());
@@ -338,6 +421,8 @@ class ControllersTest {
     @Test
     public void getComments() throws Exception {
         Ads ads = generateAds(register(generateUser()), generateImage());
+        Ads ads1 = new Ads();
+        ads1.setId(1000);
         List<CommentRecord> comments = Stream.generate(() -> generateComment(register(generateUser()), ads))
                 .limit(10)
                 .map(dtoMapper::toCommentDto)
@@ -358,11 +443,19 @@ class ControllersTest {
                             .usingRecursiveFieldByFieldElementComparator()
                             .containsExactlyInAnyOrderElementsOf(comments);
                 });
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/" + ads1.getId() + "/comments")
+                        .principal(principal)
+                )
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void addCommentsAndGetCommentAndDeleteCommentsAndUpdateCommentsTest() throws Exception {
         Ads ads = generateAds(register(generateUser()), generateImage());
+        Ads ads1 = new Ads();
+        ads1.setId(1000);
         CommentRecord commentRecord = new CommentRecord();
         commentRecord.setText("great product");
 
@@ -382,7 +475,26 @@ class ControllersTest {
                     assertThat(commentRecordResult.getText()).isEqualTo(commentRecord.getText());
                 });
 
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("http://localhost:" + port + "/ads/" + ads1.getId() + "/comments")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentRecord))
+                )
+                .andExpect(status().isNotFound());
+
         Comment comment = commentRepository.findByText(commentRecord.getText());
+        Comment comment2 = new Comment();
+        comment2.setId(1000);
+        Comment comment3 = generateComment(register(generateUser()), generateAds(register(generateUser()), generateImage()));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/" + ads1.getId() + "/comments/" + comment.getId()))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/" + ads.getId() + "/comments/" + comment2.getId()))
+                .andExpect(status().isNotFound());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("http://localhost:" + port + "/ads/" + ads.getId() + "/comments/" + comment.getId()))
@@ -395,6 +507,30 @@ class ControllersTest {
                 });
 
         commentRecord.setText("terrible product");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("http://localhost:" + port + "/ads/" + ads.getId() + "/comments/" + comment2.getId())
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentRecord))
+                )
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("http://localhost:" + port + "/ads/" + ads.getId() + "/comments/" + comment3.getId())
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentRecord))
+                )
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("http://localhost:" + port + "/ads/" + ads1.getId() + "/comments/" + comment.getId())
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentRecord))
+                )
+                .andExpect(status().isForbidden());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .patch("http://localhost:" + port + "/ads/" + ads.getId() + "/comments/" + comment.getId())
@@ -411,6 +547,21 @@ class ControllersTest {
                 });
 
         mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads.getId() + "/comments/" + comment2.getId())
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads.getId() + "/comments/" + comment3.getId())
+                        .principal(principal))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/" + ads1.getId() + "/comments/" + comment.getId())
+                        .principal(principal))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(MockMvcRequestBuilders
                         .delete("/ads/" + ads.getId() + "/comments/" + comment.getId())
                         .principal(principal))
                 .andExpect(status().isOk());
@@ -419,6 +570,8 @@ class ControllersTest {
     @Test
     public void getFullAdTest() throws Exception {
         Ads ads = generateAds(register(generateUser()), generateImage());
+        Ads ads1 = new Ads();
+        ads1.setId(1000);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(MockMvcRequestBuilders
@@ -437,6 +590,12 @@ class ControllersTest {
                     assertThat(fullAdsResult.getPhone()).isEqualTo(ads.getUser().getPhone());
                     assertThat(fullAdsResult.getTitle()).isEqualTo(ads.getTitle());
                 });
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/" + ads1.getId())
+                        .principal(principal)
+                )
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -466,12 +625,114 @@ class ControllersTest {
     @Test
     public void readImageTest() throws Exception {
         Image image = generateImage();
+        Image image1 = new Image();
+        image1.setId(1000);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(MockMvcRequestBuilders
                         .get("http://localhost:" + port + "/ads/" + image.getId() + "/image")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/" + image1.getId() + "/image")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void userNegativeTest() throws Exception {
+        UserRecord userRecord = new UserRecord();
+        userRecord.setFirstName("Petr");
+        userRecord.setLastName("Romanov");
+        userRecord.setPhone("+79568524175");
+
+        MockMultipartFile file
+                = new MockMultipartFile(
+                "image",
+                "image.jpg",
+                "image/jpeg",
+                new byte[1024]
+        );
+
+        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("use40@gmail.com", "password");
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/users/me")
+                        .principal(principal)
+                )
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("http://localhost:" + port + "/users/me")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRecord)))
+                .andExpect(status().isNotFound());
+
+        MockMultipartHttpServletRequestBuilder builder
+                = MockMvcRequestBuilders.multipart("http://localhost:" + port + "/users/me/image");
+        builder.with(request -> {
+            request.setMethod("PATCH");
+            return request;
+        });
+
+        mockMvc.perform(builder
+                        .file(file)
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void adsAndCommentNegativeTest() throws Exception {
+        CreateAds createAds = new CreateAds();
+        createAds.setPrice(1000);
+        createAds.setTitle("Nail Hammer");
+        createAds.setDescription("for carpentry");
+
+        Ads ads = generateAds(register(generateUser()), generateImage());
+        CommentRecord commentRecord = new CommentRecord();
+        commentRecord.setText("great product");
+
+        MockMultipartFile image
+                = new MockMultipartFile(
+                "image",
+                "image.jpg",
+                "image/jpeg",
+                new byte[1024]
+        );
+
+        MockMultipartFile body
+                = new MockMultipartFile(
+                "properties",
+                "properties",
+                "application/json",
+                objectMapper.writeValueAsString(createAds).getBytes()
+        );
+
+        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("use40@gmail.com", "password");
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc.perform(multipart("http://localhost:" + port + "/ads")
+                        .file(image)
+                        .file(body)
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("http://localhost:" + port + "/ads/" + ads.getId() + "/comments")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentRecord))
+                )
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("http://localhost:" + port + "/ads/me")
+                        .principal(principal))
+                .andExpect(status().isNotFound());
+
     }
 
     private RegisterReq generateUser() {
